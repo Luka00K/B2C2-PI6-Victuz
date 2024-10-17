@@ -24,7 +24,7 @@ namespace Victuz.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connection = @"Data Source=AL2;Initial Catalog=Victuz;Integrated Security=True;Trust Server Certificate=True";
+            string connection = @"Data Source=.;Initial Catalog=Victuz;Integrated Security=True;Trust Server Certificate=True";
             optionsBuilder.UseSqlServer(connection);
         }
 
