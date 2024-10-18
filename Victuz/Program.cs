@@ -14,7 +14,11 @@ namespace Victuz
             // Add services to the container.
             builder.Services.AddDbContext<ApplicationDbContext>();
 
+
+
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
 
 
             builder.Services.AddIdentity<Person, IdentityRole>(options =>
