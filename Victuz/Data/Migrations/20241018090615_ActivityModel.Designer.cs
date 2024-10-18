@@ -12,8 +12,8 @@ using Victuz.Data;
 namespace Victuz.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241017091959_classesenidentity")]
-    partial class Classesenidentity
+    [Migration("20241018090615_ActivityModel")]
+    partial class ActivityModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace Victuz.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ActivityModelCategory", b =>
+                {
+                    b.Property<int>("ActivitiesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoriesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ActivitiesId", "CategoriesId");
+
+                    b.HasIndex("CategoriesId");
+
+                    b.ToTable("ActivityModelCategory");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -160,35 +175,31 @@ namespace Victuz.Data.Migrations
 
             modelBuilder.Entity("Victuz.Models.ActivityModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<string>("CategoryId")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateTime")
+                    b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int?>("LocationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MaxParticipants")
+                    b.Property<int?>("MaxParticipants")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("LocationId");
 
@@ -261,7 +272,6 @@ namespace Victuz.Data.Migrations
                         .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -289,10 +299,6 @@ namespace Victuz.Data.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -384,6 +390,21 @@ namespace Victuz.Data.Migrations
                     b.HasDiscriminator().HasValue("Member");
                 });
 
+            modelBuilder.Entity("ActivityModelCategory", b =>
+                {
+                    b.HasOne("Victuz.Models.ActivityModel", null)
+                        .WithMany()
+                        .HasForeignKey("ActivitiesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Victuz.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -437,19 +458,9 @@ namespace Victuz.Data.Migrations
 
             modelBuilder.Entity("Victuz.Models.ActivityModel", b =>
                 {
-                    b.HasOne("Victuz.Models.Category", "Category")
-                        .WithMany("Activities")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Victuz.Models.Location", "Location")
                         .WithMany("Activities")
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
+                        .HasForeignKey("LocationId");
 
                     b.Navigation("Location");
                 });
@@ -487,11 +498,6 @@ namespace Victuz.Data.Migrations
             modelBuilder.Entity("Victuz.Models.ActivityModel", b =>
                 {
                     b.Navigation("Registrations");
-                });
-
-            modelBuilder.Entity("Victuz.Models.Category", b =>
-                {
-                    b.Navigation("Activities");
                 });
 
             modelBuilder.Entity("Victuz.Models.Location", b =>

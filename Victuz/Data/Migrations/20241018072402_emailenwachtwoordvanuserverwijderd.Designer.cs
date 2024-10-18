@@ -13,7 +13,7 @@ namespace Victuz.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20241018072402_emailenwachtwoordvanuserverwijderd")]
-    partial class emailenwachtwoordvanuserverwijderd
+    partial class Emailenwachtwoordvanuserverwijderd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

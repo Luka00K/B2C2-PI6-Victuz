@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Victuz.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class classesenidentity : Migration
+    public partial class Classesenidentity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
