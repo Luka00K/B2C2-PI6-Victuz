@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +47,7 @@ namespace Victuz.Controllers
         // GET: ActivityModels/Create
         public IActionResult Create()
         {
+            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
@@ -56,13 +58,17 @@ namespace Victuz.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,DateTime,MaxParticipants,Categoryids")] ActivityModel activityModel)
         {
+
             if (ModelState.IsValid)
             {
                 _context.Add(activityModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", activityModel.CategoryId);
             return View(activityModel);
+
         }
 
         // GET: ActivityModels/Edit/5
@@ -114,6 +120,11 @@ namespace Victuz.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(activityModel);
+        }
+
+        private bool ActivityModelExists(int? id)
+        {
+            throw new NotImplementedException();
         }
 
         // GET: ActivityModels/Delete/5

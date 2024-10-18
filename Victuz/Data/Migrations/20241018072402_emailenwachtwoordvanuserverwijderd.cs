@@ -5,7 +5,7 @@
 namespace Victuz.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class emailenwachtwoordvanuserverwijderd : Migration
+    public partial class Emailenwachtwoordvanuserverwijderd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
