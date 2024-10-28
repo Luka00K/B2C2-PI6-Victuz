@@ -1,0 +1,51 @@
+﻿@model List<Victuz.Models.ActivityModel>
+@{
+    ViewData["Title"] = "Calendar";
+    var activitiesJSON = System.Text.Json.JsonSerializer.Serialize(Model);
+}
+
+
+
+
+
+
+<head>
+    <meta charset='utf-8' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+          var calendarEl = document.getElementById('calendar');
+          var events = @Html.Raw(activitiesJSON)
+
+          var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            firstDay: 1,
+                events: events.map(event => ({
+                title: event.Name,
+                start: event.DateTime,
+                id: event.Id
+            })),
+            eventClick: function(details)
+            {
+                 var eventDetailsUrl = '/ActivityModels/Details/' + details.event.id;
+
+                 window.location.href = eventDetailsUrl;
+            },
+            eventTimeFormat: { // options for formatting time
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false // Use 12-hour format
+            }
+          });
+          calendar.render();
+        });
+
+        
+    </script>
+</head>
+<body>
+    <div id='calendar'></div>
+</body>
+
+
