@@ -1,6 +1,20 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Contact";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="contact-container">
+    <div class="contact-info">
+        <p><strong>U kunt ons bereiken met de onderstaande gegevens:</strong></p>
+        <p><strong>Email:</strong> Victuz@zuyd.nl</p>
+        <p><strong>Telefoon nummer:</strong> 045 400 6060</p>
+        <p><strong>Straat + Huisnummer:</strong> Nieuw Eyckholt 300</p>
+        <p><strong>Stad:</strong> Heerlen</p>
+        <p><strong>Postcode:</strong> 6419 DJ</p>
+    </div>
+    <div class="contact-map">
+        <img src="~/image/LocatieZuyd.png" alt="Locatie op Google Maps">
+        <p>
+            @Html.Raw("<a href='https://www.google.nl/maps/place/Zuyd+Hogeschool+-+locatie+Heerlen/@50.881401,5.9562818,17z/data=!3m1!4b1!4m6!3m5!1s0x47c0bdc055ab9379:0x8425bd9cdc8235a5!8m2!3d50.8813976!4d5.9588567!16zL20vMGJseHJs?hl=nl&entry=ttu&g_ep=EgoyMDI0MTAyMy4wIKXMDSoASAFQAw%3D%3D' target='_blank'>Bekijk locatie op Google Maps</a>")
+        </p>
+    </div>
+</div>

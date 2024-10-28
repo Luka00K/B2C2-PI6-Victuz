@@ -20,3 +20,33 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+.contact-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+
+    max-width: 800px;
+    margin: auto;
+}
+
+.contact-info {
+    text-align: left;
+    color: #333;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+
+    text-align: center;
+}
+
+    .contact-map img {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+r
