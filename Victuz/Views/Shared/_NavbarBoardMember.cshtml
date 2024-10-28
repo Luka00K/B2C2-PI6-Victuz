@@ -16,9 +16,14 @@
                     <li class="nav-item">
                         <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Agenda</a>
                     </li>
-
-                </ul>
-                <partial name="_LoginPartial" />
+                    <li class="nav-item nav-item-org ms-auto">
+                        <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="form-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="nav-link text-light " style="cursor: pointer;">
+                                Log Out
+                            </button>
+                        </form>
+                    </li>
             </div>
         </div>
     </nav>
