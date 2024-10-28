@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,12 @@ namespace Victuz.Controllers
     public class RegistrationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Member> _userManager;
 
-        public RegistrationsController(ApplicationDbContext context)
+        public RegistrationsController(ApplicationDbContext context, UserManager<Member> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Registrations
@@ -152,6 +155,48 @@ namespace Victuz.Controllers
         private bool RegistrationExists(int id)
         {
             return _context.Registrations.Any(e => e.Id == id);
+        }
+
+        //De code voor het aanmelden voor een activiteit
+        [HttpPost]
+        public async Task<IActionResult> Register(int activityId)
+        {
+            // Haal de ingelogde gebruiker op
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized(); // Indien gebruiker niet ingelogd is, geen toegang
+            }
+
+            // Controleer of de activiteit bestaat
+            var activity = await _context.Activities.FindAsync(activityId);
+            if (activity == null)
+            {
+                return NotFound(); // Activiteit bestaat niet
+            }
+
+            // Controleer of de gebruiker al geregistreerd is voor deze activiteit
+            var existingRegistration = await _context.Registrations
+                .FirstOrDefaultAsync(r => r.Activity.Id == activityId && r.Member.Id == user.Id);
+            if (existingRegistration != null)
+            {
+                // Als de gebruiker al is geregistreerd, melding tonen
+                TempData["Message"] = "Je bent al aangemeld voor deze activiteit.";
+                return RedirectToAction("Details", "Activity", new { id = activityId });
+            }
+
+            // Maak een nieuwe registratie aan
+            var registration = new Registration
+            {
+                Member = user,
+                Activity = activity
+            };
+
+            _context.Registrations.Add(registration);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Je bent succesvol aangemeld!";
+            return RedirectToAction("Details", "Activity", new { id = activityId });
         }
     }
 }
