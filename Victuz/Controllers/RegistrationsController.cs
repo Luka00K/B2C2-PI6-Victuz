@@ -14,9 +14,9 @@ namespace Victuz.Controllers
     public class RegistrationsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<Member> _userManager;
+        private readonly UserManager<Person> _userManager;
 
-        public RegistrationsController(ApplicationDbContext context, UserManager<Member> userManager)
+        public RegistrationsController(ApplicationDbContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -182,13 +182,13 @@ namespace Victuz.Controllers
             {
                 // Als de gebruiker al is geregistreerd, melding tonen
                 TempData["Message"] = "Je bent al aangemeld voor deze activiteit.";
-                return RedirectToAction("Details", "Activity", new { id = activityId });
+                return RedirectToAction("Details", "ActivityModels", new { id = activityId });
             }
 
             // Maak een nieuwe registratie aan
             var registration = new Registration
             {
-                Member = user,
+                Member = (Member)user,
                 Activity = activity
             };
 
@@ -196,7 +196,7 @@ namespace Victuz.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Je bent succesvol aangemeld!";
-            return RedirectToAction("Details", "Activity", new { id = activityId });
+            return RedirectToAction("Details", "ActivityModels", new { id = activityId });
         }
     }
 }

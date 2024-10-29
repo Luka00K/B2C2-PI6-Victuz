@@ -6,9 +6,9 @@ namespace Victuz.Models
     {
         public int Id { get; set; }
         [Required]
-        public Member Member { get; set; }
+        public Member? Member { get; set; }
         [Required]
-        public ActivityModel Activity { get; set; }
+        public ActivityModel? Activity { get; set; }
 
     }
 }
