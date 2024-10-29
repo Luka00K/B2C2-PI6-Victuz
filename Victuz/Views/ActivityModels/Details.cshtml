@@ -52,3 +52,12 @@
     <input type="hidden" name="activityId" value="@Model.Id" />
     <button type="submit">Aanmelden</button>
 </form>
+
+@{
+    if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Message"]
+        </div>
+    }
+}
