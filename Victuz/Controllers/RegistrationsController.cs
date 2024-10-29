@@ -198,5 +198,35 @@ namespace Victuz.Controllers
             TempData["Message"] = "Je bent succesvol aangemeld!";
             return RedirectToAction("Details", "ActivityModels", new { id = activityId });
         }
+
+        //Code voor het afmelden van een activiteit
+        [HttpPost]
+        public async Task<IActionResult> Unregister(int activityId)
+        {
+            // Haal de ingelogde gebruiker op
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized(); // Indien gebruiker niet ingelogd is, geen toegang
+            }
+
+            // Zoek de bestaande registratie op basis van de activiteit en de gebruiker
+            var registration = await _context.Registrations
+                .FirstOrDefaultAsync(r => r.Activity.Id == activityId && r.Member.Id == user.Id);
+
+            if (registration == null)
+            {
+                // Indien geen registratie gevonden, melding tonen
+                TempData["Message"] = "Je bent niet aangemeld voor deze activiteit.";
+                return RedirectToAction("Details", "ActivityModels", new { id = activityId });
+            }
+
+            // Verwijder de registratie en sla wijzigingen op
+            _context.Registrations.Remove(registration);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Je bent succesvol afgemeld.";
+            return RedirectToAction("Details", "ActivityModels", new { id = activityId });
+        }
     }
 }
