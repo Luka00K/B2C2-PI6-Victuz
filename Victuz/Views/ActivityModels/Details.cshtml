@@ -48,10 +48,20 @@
 </div>
 
 @*Voor de aanmeldknop *@
-<form asp-action="Register" asp-controller="Registrations" method="post">
-    <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
-    <button type="submit">Aanmelden</button>
-</form>
+@if (Model.IsRegistered)
+{
+    <form asp-action="Unregister" asp-controller="Registrations" method="post">
+        <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
+        <button type="submit" style="background-color: red; color: white;">Afmelden</button>
+    </form>
+}
+else
+{
+    <form asp-action="Register" asp-controller="Registrations" method="post">
+        <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
+        <button type="submit" style="background-color: blue; color: white;">Aanmelden</button>
+    </form>
+}
 
 @{
     if (TempData["Message"] != null)
@@ -60,12 +70,4 @@
             @TempData["Message"]
         </div>
     }
-}
-
-@if (Model.IsRegistered)
-{
-    <form asp-action="Unregister" asp-controller="Registrations" method="post">
-        <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
-        <button type="submit">Afmelden</button>
-    </form>
 }
