@@ -1,9 +1,37 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home Pagina";
 }
 
+<div class="upcoming-activities mt-4">
+    <h2>Aankomende Activiteiten</h2>
+    <ul class="list-group">
+        @if (ViewData["UpcomingActivities"] is List<ActivityModel> activities && activities.Any())
+        {
+            foreach (var activity in activities)
+            {
+                <li class="list-group-item">
+                    <strong>@activity.Name</strong> - @activity.DateTime?.ToString("dd MMM yyyy HH:mm")
+                </li>
+            }
+        }
+        else
+        {
+            <li class="list-group-item">Geen aankomende activiteiten.</li>
+        }
+    </ul>
+</div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="partners mt-5">
+    <h2>Onze Partners</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="~/image/default-image.jpg" class="img-fluid" alt="Partner 1">
+        </div>
+        <div class="col-md-4">
+            <img src="~/image/default-image.jpg" class="img-fluid" alt="Partner 2">
+        </div>
+        <div class="col-md-4">
+            <img src="~/image/default-image.jpg" class="img-fluid" alt="Partner 3">
+        </div>
+    </div>
 </div>

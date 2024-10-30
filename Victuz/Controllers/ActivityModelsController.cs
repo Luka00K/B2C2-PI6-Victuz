@@ -186,5 +186,15 @@ namespace Victuz.Controllers
         {
             return _context.Activities.Any(e => e.Id == id);
         }
+
+        public async Task<List<Victuz.Models.ActivityModel>> GetUpcomingActivities()
+        {
+            var upcomingActivities = await _context.Activities
+                .Where(a => a.DateTime >= DateTime.Now)
+                .OrderBy(a => a.DateTime)
+                .ToListAsync();
+
+            return upcomingActivities;
+        }
     }
 }
