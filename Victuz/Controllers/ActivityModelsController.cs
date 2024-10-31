@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Victuz.Data;
 using Victuz.Models;
+using Victuz.Viewmodels;
 
 namespace Victuz.Controllers
 {
@@ -23,7 +24,20 @@ namespace Victuz.Controllers
         // GET: ActivityModels
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Activities.ToListAsync());
+            var activiteiten = await _context.Activities
+                                             .Include(a => a.Category)
+                                             .Select(a => new ActivityViewModel
+                                             {
+                                                 Id = a.Id,
+                                                 Name = a.Name,
+                                                 Description = a.Description,
+                                                 DateTime = a.DateTime,
+                                                 MaxParticipants = a.MaxParticipants,
+                                                 CategoryName = a.Category.Name // Koppel de naam van de categorie
+                                             })
+                                             .ToListAsync();
+
+            return View(activiteiten);
         }
 
         // GET: ActivityModels/Details/5
@@ -35,6 +49,7 @@ namespace Victuz.Controllers
             }
 
             var activityModel = await _context.Activities
+                .Include(a => a.Category) // Zorg ervoor dat je de categorie ophaalt
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activityModel == null)
             {
@@ -52,13 +67,10 @@ namespace Victuz.Controllers
         }
 
         // POST: ActivityModels/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,DateTime,MaxParticipants,Categoryids")] ActivityModel activityModel)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryId")] ActivityModel activityModel)
         {
-
             if (ModelState.IsValid)
             {
                 _context.Add(activityModel);
@@ -68,7 +80,6 @@ namespace Victuz.Controllers
 
             ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", activityModel.CategoryId);
             return View(activityModel);
-
         }
 
         // GET: ActivityModels/Edit/5
@@ -84,15 +95,15 @@ namespace Victuz.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", activityModel.CategoryId);
             return View(activityModel);
         }
 
         // POST: ActivityModels/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,DateTime,MaxParticipants,Categoryids")] ActivityModel activityModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryId")] ActivityModel activityModel)
         {
             if (id != activityModel.Id)
             {
@@ -108,7 +119,7 @@ namespace Victuz.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ActivityModelExists(activityModel.Id))
+                    if (!ActivityModelExists((int)activityModel.Id))
                     {
                         return NotFound();
                     }
@@ -119,12 +130,9 @@ namespace Victuz.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(activityModel);
-        }
 
-        private bool ActivityModelExists(int? id)
-        {
-            throw new NotImplementedException();
+            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", activityModel.CategoryId);
+            return View(activityModel);
         }
 
         // GET: ActivityModels/Delete/5
@@ -136,6 +144,7 @@ namespace Victuz.Controllers
             }
 
             var activityModel = await _context.Activities
+                .Include(a => a.Category) // Zorg ervoor dat je de categorie ophaalt
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activityModel == null)
             {
