@@ -47,27 +47,37 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@*Voor de aanmeldknop *@
-@if (Model.IsRegistered)
+@* Voor de inschrijf- en uitschrijfknoppen *@
+@{
+    // Controleer of de gebruiker ingelogd is en de rol "Member" heeft
+    var isMember = User.Identity.IsAuthenticated && User.IsInRole("Member");
+}
+
+@if (isMember)
 {
-    <form asp-action="Unregister" asp-controller="Registrations" method="post">
-        <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
-        <button type="submit" style="background-color: red; color: white;">Uitschrijven</button>
-    </form>
+    if (Model.IsRegistered)
+    {
+        <form asp-action="Unregister" asp-controller="Registrations" method="post">
+            <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
+            <button type="submit" style="background-color: red; color: white;">Uitschrijven</button>
+        </form>
+    }
+    else
+    {
+        <form asp-action="Register" asp-controller="Registrations" method="post">
+            <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
+            <button type="submit" style="background-color: blue; color: white;">Inschrijven</button>
+        </form>
+    }
 }
 else
 {
-    <form asp-action="Register" asp-controller="Registrations" method="post">
-        <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
-        <button type="submit" style="background-color: blue; color: white;">Inschrijven</button>
-    </form>
+    <p>Je moet ingelogd zijn als Member om je in te schrijven voor deze activiteit.</p>
 }
 
-@{
-    if (TempData["Message"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["Message"]
-        </div>
-    }
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
 }
