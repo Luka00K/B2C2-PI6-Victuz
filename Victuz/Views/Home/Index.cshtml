@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<Victuz.Models.ActivityModel>
+
+@{
     ViewData["Title"] = "Home";
 }
 
@@ -31,19 +33,20 @@
         <div class="activities-section">
             <h3>Aankomende Activiteiten</h3>
             @{
-                if (Model?.Events != null && Model.Events.Any())
+                if (Model != null && Model.Any())
                 {
-                    foreach (var eventItem in Model.Events)
+                    foreach (var eventItem in Model)
                     {
-                                    <div class="activity-item">
-                                        <div class="activity-date">
-                                            <span class="day">@eventItem.Date.Day</span>
-                                            <span class="month">@eventItem.Date.ToString("MMM")</span>
-                                        </div>
-                                        <div class="activity-description">
-                                            <p>@eventItem.Description</p>
-                                        </div>
-                                    </div>
+                        string eventDetailsUrl = Url.Action("Details", "ActivityModels", new { id = eventItem.Id });
+                        <a href="@eventDetailsUrl" class="activity-card-link">
+                            <div class="activity-card">
+                                <div class="activity-card-content">
+                                    <h4 class="activity-name">@eventItem.Name</h4>
+                                    <p class="activity-date">@eventItem.DateTime?.ToString("g")</p>
+                                    <p class="activity-description">@eventItem.Description</p>
+                                </div>
+                            </div>
+                        </a>
                     }
                 }
                 else

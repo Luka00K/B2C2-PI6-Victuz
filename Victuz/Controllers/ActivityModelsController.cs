@@ -116,6 +116,26 @@ namespace Victuz.Controllers
             return View(activityModel);
         }
 
+        public IActionResult Search()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult Search(string SearchQuery)
+        {
+            Console.WriteLine("benaaantzoeken");
+            var activities = _context.Activities
+                .Where(a => a.Name.Contains(SearchQuery) ||
+                a.Description.Contains(SearchQuery) ||
+                a.Category.Name.Contains(SearchQuery) ||
+                a.Location.Name.Contains(SearchQuery) ||
+                a.Location.City.Contains(SearchQuery) ||
+                a.Location.Street.Contains(SearchQuery));
+            return View(activities);
+        }
+
         // GET: ActivityModels/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
