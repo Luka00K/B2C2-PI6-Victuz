@@ -1,9 +1,56 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
+<div class="homepage-container">
+    <!-- Meest Aankomende Activiteit -->
+    <div class="highlight-activity">
+        <div class="activity-image">
+            <img src="~/image/victuz.png" alt="Meest Aankomende Activiteit">
+        </div>
+        <div class="activity-info">
+            <h2>Meest aankomende activiteit info</h2>
+            <p>Beschrijving van de meest aankomende activiteit...</p>
+        </div>
+    </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <!-- Partners en Aankomende Activiteiten -->
+    <div class="partners-activities">
+        <!-- Partners Sectie -->
+        <div class="partners-section">
+            <h3>Partners</h3>
+            <div class="partner">
+                <img src="~/image/Partner 1.png" alt="Partner 1">
+            </div>
+            <div class="partner">
+                <img src="~/image/Partner 2.png" alt="Partner 2">
+            </div>
+        </div>
+
+        <!-- Aankomende Activiteiten Sectie -->
+        <div class="activities-section">
+            <h3>Aankomende Activiteiten</h3>
+            @{
+                if (Model?.Events != null && Model.Events.Any())
+                {
+                    foreach (var eventItem in Model.Events)
+                    {
+                                    <div class="activity-item">
+                                        <div class="activity-date">
+                                            <span class="day">@eventItem.Date.Day</span>
+                                            <span class="month">@eventItem.Date.ToString("MMM")</span>
+                                        </div>
+                                        <div class="activity-description">
+                                            <p>@eventItem.Description</p>
+                                        </div>
+                                    </div>
+                    }
+                }
+                else
+                {
+                            <p>Nog geen activiteiten gepland. Check binnenkort nogeens om je in te schrijven voor de nieuwste activiteiten.</p>
+                }
+            }
+        </div>
+    </div>
 </div>
