@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Victuz", "Victuz\Victuz.csproj", "{2CE9AA3A-1C0E-41B8-838B-19A78A75DE81}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VictuzAPI", "VictuzAPI\VictuzAPI.csproj", "{8670344E-463D-4895-A274-A1179B2864EA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2CE9AA3A-1C0E-41B8-838B-19A78A75DE81} = {2CE9AA3A-1C0E-41B8-838B-19A78A75DE81}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
