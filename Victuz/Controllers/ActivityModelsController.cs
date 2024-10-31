@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -36,48 +33,11 @@ namespace Victuz.Controllers
                                                  Description = a.Description,
                                                  DateTime = a.DateTime,
                                                  MaxParticipants = a.MaxParticipants,
-                                                 CategoryName = a.Category.Name // Koppel de naam van de categorie
+                                                 CategoryName = a.Category.Name // Toon de naam van de categorie
                                              })
                                              .ToListAsync();
 
             return View(activiteiten);
-        }
-
-        // GET: ActivityModels/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var activityModel = await _context.Activities
-                .Include(a => a.Registrations) // Laad registraties om de status te controleren
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (activityModel == null)
-            {
-                return NotFound();
-            }
-
-            // Haal de ingelogde gebruiker op
-            var user = await _userManager.GetUserAsync(User);
-            bool isRegistered = false;
-
-            // Controleer of de gebruiker is geregistreerd voor deze activiteit
-            if (user != null)
-            {
-                isRegistered = await _context.Registrations
-                    .AnyAsync(r => r.Activity.Id == id && r.Member.Id == user.Id);
-            }
-
-            // Maak het viewmodel aan
-            var viewModel = new ActivityDetailsViewModel
-            {
-                Activity = activityModel,
-                IsRegistered = isRegistered
-            };
-
-            return View(viewModel); 
         }
 
         // GET: ActivityModels/Create
@@ -106,7 +66,7 @@ namespace Victuz.Controllers
         // GET: ActivityModels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Activities == null)
             {
                 return NotFound();
             }
@@ -140,7 +100,7 @@ namespace Victuz.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ActivityModelExists((int)activityModel.Id))
+                    if (!ActivityModelExists(activityModel.Id.Value))
                     {
                         return NotFound();
                     }
@@ -159,14 +119,15 @@ namespace Victuz.Controllers
         // GET: ActivityModels/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Activities == null)
             {
                 return NotFound();
             }
 
             var activityModel = await _context.Activities
-                .Include(a => a.Category) // Zorg ervoor dat je de categorie ophaalt
+                .Include(a => a.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (activityModel == null)
             {
                 return NotFound();
