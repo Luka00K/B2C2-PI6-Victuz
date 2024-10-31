@@ -94,3 +94,13 @@
     color: var(--secondary-text-color);
     flex: 1;
 }
+
+
+
+#SearchForm {
+    margin-top: 10px
+}
+
+#searchResults {
+    margin-top: 15px
+}
