@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Victuz.Data;
 using Victuz.Models;
 
 namespace Victuz.Controllers
@@ -7,15 +9,23 @@ namespace Victuz.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext applicationDbContext)
         {
             _logger = logger;
+            _context = applicationDbContext;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var upcomingEvents = _context.Activities
+                                               .Where(e => e.DateTime > DateTime.Now)
+                                               .OrderBy(e => e.DateTime)
+                                               .Take(3)
+                                               .ToList();
+
+            return View(upcomingEvents);
         }
 
         public IActionResult Privacy()
