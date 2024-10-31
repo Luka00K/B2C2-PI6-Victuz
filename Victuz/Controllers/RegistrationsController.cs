@@ -181,7 +181,7 @@ namespace Victuz.Controllers
             if (existingRegistration != null)
             {
                 // Als de gebruiker al is geregistreerd, melding tonen
-                TempData["Message"] = "Je bent al aangemeld voor deze activiteit.";
+                TempData["Message"] = "Je bent al ingeschreven voor deze activiteit.";
                 return RedirectToAction("Details", "ActivityModels", new { id = activityId });
             }
 
@@ -195,7 +195,7 @@ namespace Victuz.Controllers
             _context.Registrations.Add(registration);
             await _context.SaveChangesAsync();
 
-            TempData["Message"] = "Je bent succesvol aangemeld!";
+            TempData["Message"] = "Je bent succesvol ingeschreven!";
             return RedirectToAction("Details", "ActivityModels", new { id = activityId });
         }
 
@@ -217,7 +217,7 @@ namespace Victuz.Controllers
             if (registration == null)
             {
                 // Indien geen registratie gevonden, melding tonen
-                TempData["Message"] = "Je bent niet aangemeld voor deze activiteit.";
+                TempData["Message"] = "Je bent niet ingeschreven voor deze activiteit.";
                 return RedirectToAction("Details", "ActivityModels", new { id = activityId });
             }
 
@@ -225,7 +225,7 @@ namespace Victuz.Controllers
             _context.Registrations.Remove(registration);
             await _context.SaveChangesAsync();
 
-            TempData["Message"] = "Je bent succesvol afgemeld.";
+            TempData["Message"] = "Je bent succesvol uitgeschreven.";
             return RedirectToAction("Details", "ActivityModels", new { id = activityId });
         }
     }
