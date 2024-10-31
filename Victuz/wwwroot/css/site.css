@@ -1,52 +1,96 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
-
-
-.contact-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-
-    max-width: 800px;
+.homepage-container {
+    max-width: 1200px;
     margin: auto;
+    padding: 20px;
 }
 
-.contact-info {
-    text-align: left;
-    color: #333;
-    font-size: 1.1em;
-    margin-bottom: 20px;
-    line-height: 1.6;
+.highlight-activity {
+    display: flex;
+    align-items: center;
+    background-color: #f3f3f3;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-
-    text-align: center;
+.activity-image img {
+    width: 100%;
+    max-width: 150px;
+    margin-right: 20px;
+    border-radius: 8px;
 }
 
-    .contact-map img {
+.activity-info h2 {
+    font-size: 1.5em;
+    color: var(--primary-text-color);
+}
+
+.activity-info p {
+    font-size: 1em;
+    color: var(--secondary-text-color);
+}
+
+.partners-activities {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.partners-section, .activities-section {
+    flex: 1;
+    background-color: #f3f3f3;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    .partners-section h3, .activities-section h3 {
+        margin-bottom: 15px;
+        color: var(--primary-text-color);
+        font-size: 1.3em;
+    }
+
+.partner {
+    margin-bottom: 15px;
+}
+
+    .partner img {
         width: 100%;
+        max-width: 100px;
         border-radius: 8px;
         border: 1px solid #ddd;
     }
-r
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    background-color: #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+.activity-date {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 5px;
+    text-align: center;
+    width: 50px;
+    margin-right: 10px;
+    border-radius: 4px;
+}
+
+    .activity-date .day {
+        font-size: 1.2em;
+    }
+
+    .activity-date .month {
+        font-size: 0.8em;
+        text-transform: uppercase;
+    }
+
+.activity-description {
+    color: var(--secondary-text-color);
+    flex: 1;
+}
