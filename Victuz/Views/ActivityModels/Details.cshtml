@@ -52,14 +52,14 @@
 {
     <form asp-action="Unregister" asp-controller="Registrations" method="post">
         <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
-        <button type="submit" style="background-color: red; color: white;">Afmelden</button>
+        <button type="submit" style="background-color: red; color: white;">Uitschrijven</button>
     </form>
 }
 else
 {
     <form asp-action="Register" asp-controller="Registrations" method="post">
         <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
-        <button type="submit" style="background-color: blue; color: white;">Aanmelden</button>
+        <button type="submit" style="background-color: blue; color: white;">Inschrijven</button>
     </form>
 }
 
