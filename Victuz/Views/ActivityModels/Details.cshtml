@@ -12,49 +12,64 @@
     </div>
 }
 
-<div>
-    <h4>ActivityModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MaxParticipants)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MaxParticipants)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CategoryIds)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CategoryIds)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Location.Id)
-        </dd>
-    </dl>
+<div class="activity-details">
+    <!-- Afbeelding sectie -->
+    <div class="activity-image">
+        <img src="~/image/victuz.png" alt="Victuz Activiteit afbeelding" />
+    </div>
+
+    <!-- Locatie en tijd sectie -->
+    <div class="activity-info">
+        <p><strong>Datum:</strong> @Model.Activity.DateTime?.ToString("dd-MM-yyyy")</p>
+        <p><strong>Tijd:</strong> @Model.Activity.DateTime?.ToString("HH:mm")</p>
+        <p><strong>Categorie:</strong> @Model.Activity.Category?.Name</p>
+        <p><strong>Locatie:</strong> @Model.Activity.Location?.Name</p>
+    </div>
+
+    <!-- Beschrijving sectie -->
+    <div class="activity-description">
+        <h3><strong>Beschrijving</strong></h3>
+        <p>@Model.Activity.Description</p>
+    </div>
+
+    <!-- Inschrijfknop en beschikbare plekken -->
+    <div class="activity-registration">
+        @if (Model.AvailableSpots > 0)
+        {
+            <p><strong>Beschikbare plekken:</strong> @Model.AvailableSpots</p>
+        }
+
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Member"))
+        {
+            if (Model.IsRegistered)
+            {
+                <form asp-action="Unregister" asp-controller="Registrations" method="post">
+                    <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
+                    <button type="submit" class="btn btn-danger">Uitschrijven</button>
+                </form>
+            }
+            else if (Model.AvailableSpots > 0)
+            {
+                <form asp-action="Register" asp-controller="Registrations" method="post">
+                    <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
+                    <button type="submit" class="btn btn-primary">Inschrijven</button>
+                </form>
+            }
+            else
+            {
+                <p>Er zijn geen beschikbare plekken meer voor deze activiteit.</p>
+            }
+        }
+        else
+        {
+            <p>Je moet ingelogd zijn als Member om je in te schrijven voor deze activiteit.</p>
+        }
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
