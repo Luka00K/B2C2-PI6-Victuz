@@ -19,6 +19,15 @@
                     <li class="nav-item">
                         <a class="nav-link text-light" asp-area="" asp-controller="ActivityModels" asp-action="Search">Zoeken</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-area="" asp-controller="ActivityModels" asp-action="Index">Activiteiten</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-area="" asp-controller="Categories" asp-action="Index">Categorieën</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-area="" asp-controller="Locations" asp-action="Index"> Locaties</a>
+                    </li>
                     <li class="nav-item nav-item-org ms-auto">
                         <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="form-inline">
                             @Html.AntiForgeryToken()
