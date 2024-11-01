@@ -62,11 +62,15 @@ namespace Victuz.Controllers
         {
             if (ModelState.IsValid)
             {
+                activityModel.Categories = await _context.Categories
+                .Where(c => activityModel.CategoryIds.Contains(c.Id))
+                 .ToListAsync();
                 _context.Add(activityModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", activityModel.LocationId);
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name");
+            ViewData["CategoryIds"] = new MultiSelectList(_context.Categories, "Id", "Name");
             return View(activityModel);
         }
 
