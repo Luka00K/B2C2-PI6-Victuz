@@ -1,43 +1,29 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Victuz.Data;
 using Victuz.Models;
-using Victuz.Viewmodels;
 
 namespace Victuz.Controllers
 {
     public class ActivityModelsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<Person> _userManager;
 
-        public ActivityModelsController(ApplicationDbContext context, UserManager<Person> userManager)
+        public ActivityModelsController(ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         // GET: ActivityModels
         public async Task<IActionResult> Index()
         {
-            var activiteiten = await _context.Activities
-                                             .Include(a => a.Category)
-                                             .Select(a => new ActivityViewModel
-                                             {
-                                                 Id = a.Id,
-                                                 Name = a.Name,
-                                                 Description = a.Description,
-                                                 DateTime = a.DateTime,
-                                                 MaxParticipants = a.MaxParticipants,
-                                                 CategoryName = a.Category.Name // Toon de naam van de categorie
-                                             })
-                                             .ToListAsync();
-
-            return View(activiteiten);
+            var applicationDbContext = _context.Activities.Include(a => a.Location).Include(a => a.Categories);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: ActivityModels/Details/5
@@ -49,46 +35,30 @@ namespace Victuz.Controllers
             }
 
             var activityModel = await _context.Activities
-                .Include(a => a.Registrations) // Laad registraties om de status te controleren
-                .Include(a => a.Category)
+                .Include(a => a.Location)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activityModel == null)
             {
                 return NotFound();
             }
 
-            // Haal de ingelogde gebruiker op
-            var user = await _userManager.GetUserAsync(User);
-            bool isRegistered = false;
-
-            // Controleer of de gebruiker is geregistreerd voor deze activiteit
-            if (user != null)
-            {
-                isRegistered = await _context.Registrations
-                    .AnyAsync(r => r.Activity.Id == id && r.Member.Id == user.Id);
-            }
-
-            // Maak het viewmodel aan
-            var viewModel = new ActivityDetailsViewModel
-            {
-                Activity = activityModel,
-                IsRegistered = isRegistered
-            };
-
-            return View(viewModel);
+            return View(activityModel);
         }
 
         // GET: ActivityModels/Create
         public IActionResult Create()
         {
-            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name");
+            ViewData["CategoryIds"] = new MultiSelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
         // POST: ActivityModels/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryId")] ActivityModel activityModel)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryIds,LocationId")] ActivityModel activityModel)
         {
             if (ModelState.IsValid)
             {
@@ -96,15 +66,14 @@ namespace Victuz.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", activityModel.CategoryId);
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", activityModel.LocationId);
             return View(activityModel);
         }
 
         // GET: ActivityModels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Activities == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -114,15 +83,16 @@ namespace Victuz.Controllers
             {
                 return NotFound();
             }
-
-            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", activityModel.CategoryId);
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", activityModel.LocationId);
             return View(activityModel);
         }
 
         // POST: ActivityModels/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryId")] ActivityModel activityModel)
+        public async Task<IActionResult> Edit(int? id, [Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryIds,LocationId")] ActivityModel activityModel)
         {
             if (id != activityModel.Id)
             {
@@ -138,7 +108,7 @@ namespace Victuz.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ActivityModelExists(activityModel.Id.Value))
+                    if (!ActivityModelExists(activityModel.Id))
                     {
                         return NotFound();
                     }
@@ -149,43 +119,21 @@ namespace Victuz.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", activityModel.CategoryId);
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", activityModel.LocationId);
             return View(activityModel);
-        }
-
-        public IActionResult Search()
-        {
-            return View();
-        }
-
-
-        [HttpPost]
-        public IActionResult Search(string SearchQuery)
-        {
-            var activities = _context.Activities
-                .Include(a => a.Category)
-                .Where(a => a.Name.Contains(SearchQuery) ||
-                a.Description.Contains(SearchQuery) ||
-                a.Category.Name.Contains(SearchQuery) ||
-                a.Location.Name.Contains(SearchQuery) ||
-                a.Location.City.Contains(SearchQuery) ||
-                a.Location.Street.Contains(SearchQuery));
-            return View(activities);
         }
 
         // GET: ActivityModels/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Activities == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var activityModel = await _context.Activities
-                .Include(a => a.Category)
+                .Include(a => a.Location)
                 .FirstOrDefaultAsync(m => m.Id == id);
-
             if (activityModel == null)
             {
                 return NotFound();
@@ -197,7 +145,7 @@ namespace Victuz.Controllers
         // POST: ActivityModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             var activityModel = await _context.Activities.FindAsync(id);
             if (activityModel != null)
@@ -209,7 +157,7 @@ namespace Victuz.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ActivityModelExists(int id)
+        private bool ActivityModelExists(int? id)
         {
             return _context.Activities.Any(e => e.Id == id);
         }

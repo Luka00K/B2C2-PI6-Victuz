@@ -33,7 +33,7 @@ namespace VictuzAPI.Controllers
         public async Task<ActionResult<ActivityModel>> GetActivityModel(int? id)
         {
             var activityModel = await _context.Activities
-                .Include(a => a.Category)
+                .Include(a => a.Categories)
                 .Include(a => a.Location)
                 .Include(a => a.Registrations)
                 .FirstOrDefaultAsync(a => a.Id == id);
