@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,14 @@ namespace Victuz.Controllers
         // GET: Registrations
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Registrations.ToListAsync());
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Verkrijg de ID van de ingelogde gebruiker
+
+            var registrations = await _context.Registrations
+                .Include(r => r.Activity) // Zorg ervoor dat de activiteit wordt opgenomen
+                .Where(r => r.Member.Id == userId) // Filter op de ingelogde gebruiker
+                .ToListAsync();
+
+            return View(registrations);
         }
 
         // GET: Registrations/Details/5

@@ -4,7 +4,13 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>@Model.Activity.Name</h1>
+@if (Model.AvailableSpots == 0)
+{
+    <div class="alert alert-warning">
+        De activiteit is vol
+    </div>
+}
 
 <div>
     <h4>ActivityModel</h4>
