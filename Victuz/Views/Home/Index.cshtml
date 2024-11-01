@@ -7,23 +7,7 @@
 
 <div class="homepage-container">
     <!-- Meest Aankomende Activiteit -->
-    <div class="highlight-activity">
-        <div class="activity-image">
-            <img src="~/image/victuz.png" alt="Meest Aankomende Activiteit">
-        </div>
-        @{
-            string eventDetailsUrlmain = Url.Action("Details", "ActivityModels", new { id = highlightActivity.Id });
-        }
-        <a href="@eventDetailsUrlmain" class="activity-card-link">
-            <div class="activity-info">
-                <h1>Meest aankomende activiteit</h1>
-                <h2>@highlightActivity.Name</h2>
-                <p>@highlightActivity.Description</p>
-                <p class="activity-date">@highlightActivity.DateTime?.ToString("g")</p>
-
-            </div>
-        </a>
-    </div>
+     
 
     <!-- Partners en Aankomende Activiteiten -->
     <div class="partners-activities">
@@ -45,27 +29,18 @@
                 @{
                     if (Model != null && Model.Any())
                     {
-                        foreach (var eventItem in Model)
-                        {
-                            string eventDetailsUrl = Url.Action("Details", "ActivityModels", new { id = eventItem.Id });
-                                        <a href="@eventDetailsUrl" class="activity-card-link">
-                                            <div class="activity-card">
-                                                <div class="activity-card-content">
-                                                    <div class="activity-date">
-                                            @eventItem.DateTime?.ToString("dd-MM-yyyy")
-                                                    </div>
-                                                    <div class="activity-details">
-                                                        <h4 class="activity-name">@eventItem.Name</h4>
-                                                        <p class="activity-description">@eventItem.Description</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>
-                        }
-                    }
-                    else
-                    {
-                                <p>Nog geen activiteiten gepland. Check binnenkort nogeens om je in te schrijven voor de nieuwste activiteiten.</p>
+
+                        string eventDetailsUrl = Url.Action("Details", "ActivityModels", new { id = eventItem.Id });
+                        <a href="@eventDetailsUrl" class="activity-card-link">
+                            <div class="activity-card">
+                                <div class="activity-card-content">
+                                    <h4 class="activity-name">@eventItem.Name</h4>
+                                    <p class="activity-date">@eventItem.DateTime.ToString("g")</p>
+                                    <p class="activity-description">@eventItem.Description</p>
+                                </div>
+                            </div>
+                        </a>
+
                     }
                 }
             </div>
