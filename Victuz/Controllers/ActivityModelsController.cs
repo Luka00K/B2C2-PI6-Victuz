@@ -40,6 +40,44 @@ namespace Victuz.Controllers
             return View(activiteiten);
         }
 
+        // GET: ActivityModels/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var activityModel = await _context.Activities
+                .Include(a => a.Registrations) // Laad registraties om de status te controleren
+                .Include(a => a.Category)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (activityModel == null)
+            {
+                return NotFound();
+            }
+
+            // Haal de ingelogde gebruiker op
+            var user = await _userManager.GetUserAsync(User);
+            bool isRegistered = false;
+
+            // Controleer of de gebruiker is geregistreerd voor deze activiteit
+            if (user != null)
+            {
+                isRegistered = await _context.Registrations
+                    .AnyAsync(r => r.Activity.Id == id && r.Member.Id == user.Id);
+            }
+
+            // Maak het viewmodel aan
+            var viewModel = new ActivityDetailsViewModel
+            {
+                Activity = activityModel,
+                IsRegistered = isRegistered
+            };
+
+            return View(viewModel);
+        }
+
         // GET: ActivityModels/Create
         public IActionResult Create()
         {
@@ -125,8 +163,8 @@ namespace Victuz.Controllers
         [HttpPost]
         public IActionResult Search(string SearchQuery)
         {
-            Console.WriteLine("benaaantzoeken");
             var activities = _context.Activities
+                .Include(a => a.Category)
                 .Where(a => a.Name.Contains(SearchQuery) ||
                 a.Description.Contains(SearchQuery) ||
                 a.Category.Name.Contains(SearchQuery) ||

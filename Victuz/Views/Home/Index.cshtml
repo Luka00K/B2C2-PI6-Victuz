@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Home";
+    var highlightActivity = ViewBag.HighlightActivity as Victuz.Models.ActivityModel;
 }
 
 <div class="homepage-container">
@@ -10,10 +11,18 @@
         <div class="activity-image">
             <img src="~/image/victuz.png" alt="Meest Aankomende Activiteit">
         </div>
-        <div class="activity-info">
-            <h2>Meest aankomende activiteit info</h2>
-            <p>Beschrijving van de meest aankomende activiteit...</p>
-        </div>
+        @{
+            string eventDetailsUrlmain = Url.Action("Details", "ActivityModels", new { id = highlightActivity.Id });
+        }
+        <a href="@eventDetailsUrlmain" class="activity-card-link">
+            <div class="activity-info">
+                <h1>Meest aankomende activiteit</h1>
+                <h2>@highlightActivity.Name</h2>
+                <p>@highlightActivity.Description</p>
+                <p class="activity-date">@highlightActivity.DateTime?.ToString("g")</p>
+
+            </div>
+        </a>
     </div>
 
     <!-- Partners en Aankomende Activiteiten -->
