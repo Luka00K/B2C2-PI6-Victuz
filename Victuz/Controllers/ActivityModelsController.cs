@@ -162,8 +162,8 @@ namespace Victuz.Controllers
         [HttpPost]
         public IActionResult Search(string SearchQuery)
         {
-            Console.WriteLine("benaaantzoeken");
             var activities = _context.Activities
+                .Include(a => a.Category)
                 .Where(a => a.Name.Contains(SearchQuery) ||
                 a.Description.Contains(SearchQuery) ||
                 a.Category.Name.Contains(SearchQuery) ||

@@ -7,15 +7,15 @@
 
 
 <form asp-controller="ActivityModels" asp-action="Search" method="post" class="d-flex" id="SearchForm">
-    <input id="search-input" type="search" name="SearchQuery" class="form-control me-sm-2" placeholder="Seach activities based on name, location or categories" />
-    <button id="search-button" type="submit" class="btn btn-secondary my-2 my-sm-0"> Search</button>
+    <input id="search-input" type="search" name="SearchQuery" class="form-control me-sm-2" placeholder="Zoek activiteiten op naam, locatie of categorie" />
+    <button id="search-button" type="submit" class="btn btn-secondary my-2 my-sm-0"> Zoeken</button>
 </form>
 @if (Model != null)
 {
     <div id="searchResults">
         @if (Model.Count() == 0)
         {
-            <p> No activities found</p>
+            <p> Geen activiteiten gevonden</p>
         }
         else
         {
@@ -23,19 +23,19 @@
             <thead>
                 <tr>
                     <th>
-                        @Html.DisplayNameFor(model => model.Name)
+                        Naam
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Description)
+                        Beschrijving
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.DateTime)
+                        Datum en tijd
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.MaxParticipants)
+                        Maximum deelnemers
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.CategoryId)
+                        Categorieën
                     </th>
                     <th></th>
                 </tr>
@@ -51,18 +51,21 @@
                             @Html.DisplayFor(modelItem => item.Description)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.DateTime)
+                                @{
+                                    var formattedDate = item.DateTime.HasValue ? item.DateTime.Value.ToString("dd/MM/yyyy HH:mm") : "";
+                                }
+                                @formattedDate
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.MaxParticipants)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.CategoryId)
+                            @Html.DisplayFor(modelItem => item.Category.Name)
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Edit" asp-route-id="@item.Id">Bewerken</a> |
                             <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id">Verwijderen</a>
                         </td>
                     </tr>
                 }
