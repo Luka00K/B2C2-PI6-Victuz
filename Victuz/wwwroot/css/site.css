@@ -2,6 +2,11 @@
     max-width: 1200px;
     margin: auto;
     padding: 20px;
+    height: 100vh; /* Vul de volledige hoogte van het scherm */
+    overflow: hidden; /* Verberg de algemene scrollbar */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .highlight-activity {
@@ -9,7 +14,7 @@
     align-items: center;
     background-color: #f3f3f3;
     padding: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -35,6 +40,9 @@
     display: flex;
     gap: 20px;
     justify-content: space-between;
+    flex-grow: 1;
+    max-height: 300px; /* Stel een maximale hoogte in om ruimte te besparen */
+    overflow-y: hidden;
 }
 
 .partners-section, .activities-section {
@@ -43,13 +51,11 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: hidden;
 }
-
-    .partners-section h3, .activities-section h3 {
-        margin-bottom: 15px;
-        color: var(--primary-text-color);
-        font-size: 1.3em;
-    }
 
 .partner {
     margin-bottom: 15px;
@@ -62,49 +68,66 @@
         border: 1px solid #ddd;
     }
 
-.activity-item {
-    display: flex;
-    align-items: center;
-    background-color: #ddd;
+.scrollable-activities {
+    max-height: 300px; /* Beperkt de hoogte van de activiteitenlijst */
+    overflow-y: auto; /* Alleen deze sectie scrollbaar */
     padding: 10px;
-    margin-bottom: 10px;
+    border: 1px solid #ccc;
     border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.activity-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    transition: transform 0.2s;
+}
+
+    .activity-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+.activity-card-content {
+    display: flex;
+    flex-direction: row; /* Plaats de datum en details in een rij */
+    gap: 15px; /* Ruimte tussen de datum en details */
+    align-items: center;
 }
 
 .activity-date {
-    background-color: var(--primary-color);
-    color: #fff;
-    padding: 5px;
+    font-size: 0.9em;
+    color: #666;
     text-align: center;
-    width: 50px;
-    margin-right: 10px;
-    border-radius: 4px;
+    width: 80px; /* Breedte voor de datumkolom */
 }
 
-    .activity-date .day {
-        font-size: 1.2em;
-    }
+.activity-details {
+    display: flex;
+    flex-direction: column;
+}
 
-    .activity-date .month {
-        font-size: 0.8em;
-        text-transform: uppercase;
-    }
+.activity-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
 
 .activity-description {
-    color: var(--secondary-text-color);
-    flex: 1;
+    font-size: 1em;
+    color: #555;
+    margin-top: 5px;
 }
 
-
-
 #SearchForm {
-    margin-top: 10px
+    margin-top: 10px;
 }
 
 #searchResults {
-    margin-top: 15px
+    margin-top: 15px;
 }
-
 
 .activities-section {
     display: flex;
@@ -115,40 +138,4 @@
 .activity-card-link {
     text-decoration: none;
     color: inherit;
-}
-
-.activity-card {
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.2s;
-    padding: 15px;
-}
-
-    .activity-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-.activity-card-content {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.activity-name {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #333;
-}
-
-.activity-date {
-    font-size: 0.9em;
-    color: #666;
-}
-
-.activity-description {
-    font-size: 1em;
-    color: #555;
 }

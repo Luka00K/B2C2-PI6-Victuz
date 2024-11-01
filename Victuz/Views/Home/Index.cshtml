@@ -29,31 +29,37 @@
             </div>
         </div>
 
-        <!-- Aankomende Activiteiten Sectie -->
+        <!-- Aankomende Activiteiten Sectie met Scrollbaar Gebied -->
         <div class="activities-section">
             <h3>Aankomende Activiteiten</h3>
-            @{
-                if (Model != null && Model.Any())
-                {
-                    foreach (var eventItem in Model)
+            <div class="scrollable-activities">
+                @{
+                    if (Model != null && Model.Any())
                     {
-                        string eventDetailsUrl = Url.Action("Details", "ActivityModels", new { id = eventItem.Id });
-                        <a href="@eventDetailsUrl" class="activity-card-link">
-                            <div class="activity-card">
-                                <div class="activity-card-content">
-                                    <h4 class="activity-name">@eventItem.Name</h4>
-                                    <p class="activity-date">@eventItem.DateTime?.ToString("g")</p>
-                                    <p class="activity-description">@eventItem.Description</p>
-                                </div>
-                            </div>
-                        </a>
+                        foreach (var eventItem in Model)
+                        {
+                            string eventDetailsUrl = Url.Action("Details", "ActivityModels", new { id = eventItem.Id });
+                                        <a href="@eventDetailsUrl" class="activity-card-link">
+                                            <div class="activity-card">
+                                                <div class="activity-card-content">
+                                                    <div class="activity-date">
+                                            @eventItem.DateTime?.ToString("dd-MM-yyyy")
+                                                    </div>
+                                                    <div class="activity-details">
+                                                        <h4 class="activity-name">@eventItem.Name</h4>
+                                                        <p class="activity-description">@eventItem.Description</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                        }
+                    }
+                    else
+                    {
+                                <p>Nog geen activiteiten gepland. Check binnenkort nogeens om je in te schrijven voor de nieuwste activiteiten.</p>
                     }
                 }
-                else
-                {
-                            <p>Nog geen activiteiten gepland. Check binnenkort nogeens om je in te schrijven voor de nieuwste activiteiten.</p>
-                }
-            }
+            </div>
         </div>
     </div>
 </div>
