@@ -26,11 +26,21 @@
                 start: event.DateTime,
                 id: event.Id
             })),
+            locale: "nl",
+            locales: [{
+                code : "nl",
+                monthNames: ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'],
+                dayNamesShort: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
+                dayNames: ['Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag']
+            }],
             eventClick: function(details)
             {
                  var eventDetailsUrl = '/ActivityModels/Details/' + details.event.id;
 
                  window.location.href = eventDetailsUrl;
+            },
+            buttonText:{
+                today: "Vandaag"
             },
             eventTimeFormat: { // options for formatting time
                 hour: '2-digit',
