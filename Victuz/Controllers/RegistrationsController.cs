@@ -25,7 +25,12 @@ namespace Victuz.Controllers
         // GET: Registrations
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Registrations.ToListAsync());
+            var registrations = await _context.Registrations
+                .Include(r => r.Activity) // Zorg ervoor dat de activiteit wordt opgenomen
+                .Include(r => r.Member) // Als je ook de ledeninformatie nodig hebt
+                .ToListAsync();
+
+            return View(registrations);
         }
 
         // GET: Registrations/Details/5
