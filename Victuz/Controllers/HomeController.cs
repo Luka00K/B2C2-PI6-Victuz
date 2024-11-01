@@ -22,7 +22,7 @@ namespace Victuz.Controllers
             var upcomingEvents = _context.Activities
                                                .Where(e => e.DateTime > DateTime.Now)
                                                .OrderBy(e => e.DateTime)
-                                               .Take(4)
+                                               .Take(10)
                                                .ToList();
 
 
