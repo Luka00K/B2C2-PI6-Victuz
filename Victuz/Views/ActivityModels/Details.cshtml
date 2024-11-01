@@ -4,87 +4,68 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>ActivityModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Activity.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Activity.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Activity.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Activity.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Activity.DateTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Activity.DateTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Activity.MaxParticipants)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Activity.MaxParticipants)
-        </dd>
-        <dt class="col-sm-2">
-            Categorie
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Activity.Category.Name)
-        </dd>
-
-        <dt class="col-sm-2">
-            Beschikbare plekken
-        </dt>
-        <dd class="col-sm-10">
-            @Model.AvailableSpots
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Activity?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@* Voor de inschrijf- en uitschrijfknoppen *@
-@{
-    // Controleer of de gebruiker ingelogd is en de rol "Member" heeft
-    var isMember = User.Identity.IsAuthenticated && User.IsInRole("Member");
-}
-
-@if (isMember)
+<h1>@Model.Activity.Name</h1>
+@if (Model.AvailableSpots == 0)
 {
-    if (Model.IsRegistered)
-    {
-        <form asp-action="Unregister" asp-controller="Registrations" method="post">
-            <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
-            <button type="submit" style="background-color: red; color: white;">Uitschrijven</button>
-        </form>
-    }
-    else if (Model.AvailableSpots > 0)
-    {
-        <form asp-action="Register" asp-controller="Registrations" method="post">
-            <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
-            <button type="submit" style="background-color: blue; color: white;">Inschrijven</button>
-        </form>
-    }
-    else
-    {
-        <p>Er zijn geen beschikbare plekken meer voor deze activiteit.</p>
-    }
+    <div class="alert alert-warning">
+        De activiteit is vol
+    </div>
 }
-else
-{
-    <p>Je moet ingelogd zijn als Member om je in te schrijven voor deze activiteit.</p>
-}
+
+<div class="activity-details">
+    <!-- Afbeelding sectie -->
+    <div class="activity-image">
+        <img src="~/image/victuz.png" alt="Victuz Activiteit afbeelding" />
+    </div>
+
+    <!-- Locatie en tijd sectie -->
+    <div class="activity-info">
+        <p><strong>Datum:</strong> @Model.Activity.DateTime?.ToString("dd-MM-yyyy")</p>
+        <p><strong>Tijd:</strong> @Model.Activity.DateTime?.ToString("HH:mm")</p>
+        <p><strong>Categorie:</strong> @Model.Activity.Category?.Name</p>
+        <p><strong>Locatie:</strong> @Model.Activity.Location?.Name</p>
+    </div>
+
+    <!-- Beschrijving sectie -->
+    <div class="activity-description">
+        <h3><strong>Beschrijving</strong></h3>
+        <p>@Model.Activity.Description</p>
+    </div>
+
+    <!-- Inschrijfknop en beschikbare plekken -->
+    <div class="activity-registration">
+        @if (Model.AvailableSpots > 0)
+        {
+            <p><strong>Beschikbare plekken:</strong> @Model.AvailableSpots</p>
+        }
+
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Member"))
+        {
+            if (Model.IsRegistered)
+            {
+                <form asp-action="Unregister" asp-controller="Registrations" method="post">
+                    <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
+                    <button type="submit" class="btn btn-danger">Uitschrijven</button>
+                </form>
+            }
+            else if (Model.AvailableSpots > 0)
+            {
+                <form asp-action="Register" asp-controller="Registrations" method="post">
+                    <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
+                    <button type="submit" class="btn btn-primary">Inschrijven</button>
+                </form>
+            }
+            else
+            {
+                <p>Er zijn geen beschikbare plekken meer voor deze activiteit.</p>
+            }
+        }
+        else
+        {
+            <p>Je moet ingelogd zijn als Member om je in te schrijven voor deze activiteit.</p>
+        }
+    </div>
+</div>
 
 @if (TempData["Message"] != null)
 {
