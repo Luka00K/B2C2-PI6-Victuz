@@ -22,10 +22,16 @@ namespace Victuz.Controllers
             var upcomingEvents = _context.Activities
                                                .Where(e => e.DateTime > DateTime.Now)
                                                .OrderBy(e => e.DateTime)
-                                               .Take(3)
+                                               .Take(4)
                                                .ToList();
 
-            return View(upcomingEvents);
+
+            var highlightActivity = upcomingEvents.FirstOrDefault(); 
+            var remainingActivities = upcomingEvents.Skip(1).ToList(); 
+
+            ViewBag.HighlightActivity = highlightActivity;
+
+            return View(remainingActivities);
         }
 
         public IActionResult Privacy()
