@@ -50,6 +50,7 @@ namespace Victuz.Controllers
 
             var activityModel = await _context.Activities
                 .Include(a => a.Registrations) // Laad registraties om de status te controleren
+                .Include(a => a.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activityModel == null)
             {
