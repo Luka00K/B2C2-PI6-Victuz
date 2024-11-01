@@ -27,7 +27,11 @@ namespace Victuz.Controllers
 
 
             var highlightActivity = upcomingEvents.FirstOrDefault(); 
-            var remainingActivities = upcomingEvents.Skip(1).ToList(); 
+            var remainingActivities = upcomingEvents.Skip(1).ToList();
+
+            Console.WriteLine(upcomingEvents.Count);
+            Console.WriteLine(remainingActivities.Count);
+
 
             ViewBag.HighlightActivity = highlightActivity;
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +13,13 @@ namespace Victuz.Controllers
 {
     public class ActivityModelsController : Controller
     {
+        private readonly UserManager<Person> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public ActivityModelsController(ApplicationDbContext context)
+        public ActivityModelsController(ApplicationDbContext context, UserManager<Person> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: ActivityModels
@@ -35,14 +38,33 @@ namespace Victuz.Controllers
             }
 
             var activityModel = await _context.Activities
-                .Include(a => a.Location)
+                .Include(a => a.Registrations) // Laad registraties om de status te controleren
+                .Include(a => a.Categories)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activityModel == null)
             {
                 return NotFound();
             }
 
-            return View(activityModel);
+            // Haal de ingelogde gebruiker op
+            var user = await _userManager.GetUserAsync(User);
+            bool isRegistered = false;
+
+            // Controleer of de gebruiker is geregistreerd voor deze activiteit
+            if (user != null)
+            {
+                isRegistered = await _context.Registrations
+                    .AnyAsync(r => r.Activity.Id == id && r.Member.Id == user.Id);
+            }
+
+            // Maak het viewmodel aan
+            var viewModel = new ActivityDetailsViewModel
+            {
+                Activity = activityModel,
+                IsRegistered = isRegistered
+            };
+
+            return View(viewModel);
         }
 
         // GET: ActivityModels/Create
@@ -164,6 +186,24 @@ namespace Victuz.Controllers
         private bool ActivityModelExists(int? id)
         {
             return _context.Activities.Any(e => e.Id == id);
+        }
+
+
+        public IActionResult Search()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Search(string SearchQuery)
+        {
+            var activities = _context.Activities
+                .Include(a => a.Categories)
+                .Where(a => a.Name.Contains(SearchQuery) ||
+                a.Description.Contains(SearchQuery) ||
+                a.Categories.Any(c => c.Name.Contains(SearchQuery)) ||
+                a.Location.City.Contains(SearchQuery) ||
+                a.Location.Street.Contains(SearchQuery));
+            return View(activities);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Victuz.Models.ActivityModel
+﻿@model Victuz.Models.ActivityDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -20,9 +20,12 @@
 
     <!-- Locatie en tijd sectie -->
     <div class="activity-info">
-        <p><strong>Datum:</strong> @Model.Activity.DateTime?.ToString("dd-MM-yyyy")</p>
-        <p><strong>Tijd:</strong> @Model.Activity.DateTime?.ToString("HH:mm")</p>
-        <p><strong>Categorie:</strong> @Model.Activity.Category?.Name</p>
+        <p><strong>Datum:</strong> @Model.Activity.DateTime.ToString("dd-MM-yyyy")</p>
+        <p><strong>Tijd:</strong> @Model.Activity.DateTime.ToString("HH:mm")</p>
+        @foreach(var category in Model.Activity.Categories)
+        {
+            <p><strong>Categorie:</strong> @category.Name</p>
+        }
         <p><strong>Locatie:</strong> @Model.Activity.Location?.Name</p>
     </div>
 
