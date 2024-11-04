@@ -28,6 +28,8 @@ namespace Victuz.Models
 
         public List<Category>? Categories { get; set; }
         public Location? Location { get; set; }
+        // FreeForEverybody, FreeForMembers, Paid 
+        public string PaymentType { get; set; }
         public ICollection<Registration>? Registrations { get; set; }
     }
 }

@@ -76,7 +76,7 @@ namespace Victuz.Controllers
         // POST: ActivityModels/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryIds,LocationId")] ActivityModel activityModel)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryIds,LocationId, PaymentType")] ActivityModel activityModel)
         {
             if (ModelState.IsValid)
             {
