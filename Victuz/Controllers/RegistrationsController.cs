@@ -76,6 +76,9 @@ namespace Victuz.Controllers
             return View(registration);
         }
 
+
+
+
         // GET: Registrations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -236,6 +239,50 @@ namespace Victuz.Controllers
             TempData["Message"] = "Je bent succesvol uitgeschreven.";
             return RedirectToAction("Details", "ActivityModels", new { id = activityId });
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> RegisterWithoutAccount(int activityId)
+        {
+            
+            ViewBag.ActivityId = activityId;
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterWithoutAccount(int activityId, string FirstName, string LastName)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                return Unauthorized(); 
+            }
+
+            
+            var activity = await _context.Activities.FindAsync(activityId);
+            if (activity == null)
+            {
+                return NotFound(); 
+            }
+
+          
+
+            // Maak een nieuwe registratie aan
+            var registration = new Registration
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                Activity = activity
+            };
+
+            _context.Registrations.Add(registration);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Je bent succesvol ingeschreven!";
+            return RedirectToAction("Details", "ActivityModels", new { id = activityId });
+        }
+
 
         //Aanwezigheidcode
         public async Task<IActionResult> AttendanceList(int activityId)

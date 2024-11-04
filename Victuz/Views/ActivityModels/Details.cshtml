@@ -86,7 +86,7 @@
             <p><strong>Beschikbare plekken:</strong> @Model.AvailableSpots</p>
         }
 
-        @if (User.Identity.IsAuthenticated && User.IsInRole("Member"))
+        @if (!User.Identity.IsAuthenticated || User.IsInRole("Member"))
         {
             if (Model.IsRegistered)
             {
@@ -97,10 +97,18 @@
             }
             else if (Model.AvailableSpots > 0)
             {
-                <form asp-action="Register" asp-controller="Registrations" method="post">
-                    <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
-                    <button type="submit" class="btn btn-primary">Inschrijven</button>
-                </form>
+                if (User.IsInRole("Member"))
+                {
+                    
+                }
+                else
+                {
+                    <form asp-action="RegisterWithoutAccount" asp-controller="Registrations" method="get">
+                        <input type="hidden" name="activityId" value="@Model.Activity?.Id" />
+                        <button type="submit" class="btn btn-primary">Inschrijven</button>
+                    </form>
+                }
+
             }
             else
             {
