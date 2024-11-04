@@ -2,8 +2,8 @@
     max-width: 1200px;
     margin: auto;
     padding: 20px;
-    height: 100vh; /* Vul de volledige hoogte van het scherm */
-    overflow: hidden; /* Verberg de algemene scrollbar */
+    min-height: 100vh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -55,7 +55,6 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    overflow: hidden;
 }
 
 .partner {
@@ -65,7 +64,7 @@
     .partner img {
         width: 100%;
         max-width: 100px;
-        border-radius: 8px;
+        border-radius: 10px; /* Maak de hoeken van de partnerlogo's afgerond */
         border: 1px solid #ddd;
     }
 
@@ -140,3 +139,64 @@
     text-decoration: none;
     color: inherit;
 }
+
+.footer {
+    width: 100%;
+    background-color: #343a40; /* Donkere achtergrondkleur */
+    color: white; /* Wit voor de tekst */
+    text-align: center; /* Center de tekst */
+    padding: 20px 0; /* Voegt wat padding toe */
+    position: relative; /* Zorgt ervoor dat de footer goed wordt weergegeven in de flow van de pagina */
+    left: 0; /* Plaatst de footer aan de linkerkant */
+}
+
+    .footer img {
+        max-height: 50px; /* Max hoogte van de afbeelding */
+        margin: 0 5px; /* Ruimte tussen de afbeeldingen */
+    }
+
+    .footer .partners img.partner-logo {
+        border-radius: 10px; /* Maak de hoeken van de partnerlogo's afgerond */
+    }
+
+    .footer .copyright {
+        display: flex;
+        align-items: center; /* Zorg ervoor dat de tekst en het logo verticaal zijn uitgelijnd */
+    }
+
+        .footer .copyright a {
+            color: white; /* Kleur van de "Victuz" link */
+            text-decoration: none; /* Verwijder onderstreping */
+            margin-left: 5px; /* Ruimte tussen de copyright-tekst en het logo */
+        }
+
+            .footer .copyright a:hover {
+                text-decoration: underline; /* Onderstreep de tekst bij hover */
+            }
+
+    .footer img:not(.partner-logo) {
+        border-radius: 0; /* Zorg ervoor dat het Instagram-logo geen afgeronde hoeken heeft */
+        width: 24px; /* Maak het Instagram-logo iets kleiner */
+        height: auto; /* Zorg voor een automatische hoogte */
+        transition: transform 0.2s; /* Voeg een transitie toe voor het hover-effect */
+    }
+
+        .footer img:not(.partner-logo):hover {
+            transform: scale(1.2); /* Maak het logo iets groter bij hover */
+        }
+
+
+.social-media {
+    margin-top: 10px; /* Ruimte boven het pictogram */
+}
+
+    .social-media a {
+        margin: 0 10px; /* Ruimte tussen iconen */
+        text-decoration: none; /* Verwijder onderstreping */
+        color: white; /* Zorg ervoor dat de kleur overeenkomt met de tekstkleur */
+    }
+
+        .social-media a:hover {
+            color: #f1c40f; /* Verander kleur bij hover */
+            transform: scale(1.1); /* Voeg een kleine vergroting toe bij hover */
+        }

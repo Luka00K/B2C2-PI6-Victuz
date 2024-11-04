@@ -6,40 +6,24 @@
 }
 
 <div class="homepage-container">
-    <!-- Meest Aankomende Activiteit -->
-    <div class="highlight-activity">
+    <div class="highlight-activity mb-4">
         <div class="activity-image">
-            <img src="~/image/victuz.png" alt="Meest Aankomende Activiteit">
+            <img src="~/image/victuz.png" alt="Meest Aankomende Activiteit" class="img-fluid">
         </div>
         @{
             string eventDetailsUrlmain = Url.Action("Details", "ActivityModels", new { id = highlightActivity.Id });
         }
         <a href="@eventDetailsUrlmain" class="activity-card-link">
             <div class="activity-info">
-                <h1>Meest aankomende activiteit</h1>
+                <h1 class="display-4">Meest aankomende activiteit</h1>
                 <h2>@highlightActivity.Name</h2>
                 <p>@highlightActivity.Description</p>
                 <p class="activity-date">@highlightActivity.DateTime?.ToString("g")</p>
-
             </div>
         </a>
     </div>
 
-    <!-- Partners en Aankomende Activiteiten -->
-    <div class="partners-activities">
-        <!-- Partners Sectie -->
-        <div class="partners-section">
-            <h3>Partners</h3>
-            <div class="partner">
-                <img src="~/image/Partner 1.png" alt="Partner 1">
-            </div>
-            <div class="partner">
-                <img src="~/image/Partner 2.png" alt="Partner 2">
-            </div>
-        </div>
-
-        <!-- Aankomende Activiteiten Sectie met Scrollbaar Gebied -->
-        <div class="activities-section">
+        <div class="activities-section col-md-6">
             <h3>Aankomende Activiteiten</h3>
             <div class="scrollable-activities">
                 @{
@@ -48,24 +32,24 @@
                         foreach (var eventItem in Model)
                         {
                             string eventDetailsUrl = Url.Action("Details", "ActivityModels", new { id = eventItem.Id });
-                                        <a href="@eventDetailsUrl" class="activity-card-link">
-                                            <div class="activity-card">
-                                                <div class="activity-card-content">
-                                                    <div class="activity-date">
+                            <a href="@eventDetailsUrl" class="activity-card-link">
+                                <div class="activity-card mb-2">
+                                    <div class="activity-card-content">
+                                        <div class="activity-date">
                                             @eventItem.DateTime?.ToString("dd-MM-yyyy")
-                                                    </div>
-                                                    <div class="activity-details">
-                                                        <h4 class="activity-name">@eventItem.Name</h4>
-                                                        <p class="activity-description">@eventItem.Description</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>
+                                        </div>
+                                        <div class="activity-details">
+                                            <h4 class="activity-name">@eventItem.Name</h4>
+                                            <p class="activity-description">@eventItem.Description</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
                         }
                     }
                     else
                     {
-                                <p>Nog geen activiteiten gepland. Check binnenkort nogeens om je in te schrijven voor de nieuwste activiteiten.</p>
+                        <p>Nog geen activiteiten gepland. Check binnenkort nog eens om je in te schrijven voor de nieuwste activiteiten.</p>
                     }
                 }
             </div>
