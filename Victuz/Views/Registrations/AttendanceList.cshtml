@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Victuz.Models.Registration>
+
+@{
+    ViewData["Title"] = "Aanwezigheid voor " + Model.First().Activity.Name;
+}
+
+<h2>Aanwezigheid voor @Model.First().Activity.Name</h2>
+
+<table>
+    <tr>
+        <th>Deelnemer</th>
+        <th>Aanwezig</th>
+    </tr>
+    @foreach (var registration in Model)
+    {
+        <tr>
+            <td>@registration.Member.FirstName</td>
+            <td>
+                <form asp-action="MarkAttendance" method="post">
+                    <input type="hidden" name="registrationId" value="@registration.Id" />
+                    <input type="checkbox" name="isPresent" value="true"
+                           onchange="this.form.submit()" @(registration.IsPresent == true ? "checked" : "") />
+                </form>
+            </td>
+        </tr>
+    }
+</table>

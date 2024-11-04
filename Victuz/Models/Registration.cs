@@ -9,6 +9,7 @@ namespace Victuz.Models
         public Member? Member { get; set; }
         [Required]
         public ActivityModel? Activity { get; set; }
+        public bool? IsPresent { get; set; }
 
     }
 }
