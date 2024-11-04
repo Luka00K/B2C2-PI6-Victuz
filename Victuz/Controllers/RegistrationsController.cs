@@ -236,5 +236,41 @@ namespace Victuz.Controllers
             TempData["Message"] = "Je bent succesvol uitgeschreven.";
             return RedirectToAction("Details", "ActivityModels", new { id = activityId });
         }
+
+        //Aanwezigheidcode
+        public async Task<IActionResult> AttendanceList(int activityId)
+        {
+            var registrations = await _context.Registrations
+                .Where(r => r.Activity != null && r.Activity.Id == activityId)
+                .Include(r => r.Member)
+                .Include(r => r.Activity)
+                .ToListAsync();
+
+            if (!registrations.Any())
+            {
+                return NotFound("Geen registraties gevonden voor deze activiteit");
+            }
+
+            return View(registrations);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MarkAttendance(int registrationId, bool isPresent)
+        {
+            var registration = await _context.Registrations
+                .Include(r => r.Activity) // Zorg ervoor dat Activity wordt ingeladen
+                .FirstOrDefaultAsync(r => r.Id == registrationId);
+
+            if (registration == null)
+            {
+                return NotFound();
+            }
+
+            // Update de aanwezigheid
+            registration.IsPresent = isPresent;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("AttendanceList", new { activityId = registration.Activity.Id });
+        }
     }
 }

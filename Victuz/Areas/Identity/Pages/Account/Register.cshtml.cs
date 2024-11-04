@@ -133,7 +133,11 @@ namespace Victuz.Areas.Identity.Pages.Account
                 {
                     user = new BoardMember();
                 }
-                else
+                else if(Input.AccountType == "Organizer")
+                {
+                    user = new Organizer();
+                }
+                else 
                 {
                     Console.WriteLine("No role? canceling register");
                     return Page();
@@ -152,7 +156,7 @@ namespace Victuz.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
-                    
+
                     if (Input.AccountType == "Member")
                     {
                         var roleResult = await _userManager.AddToRoleAsync(user, Input.AccountType);
@@ -161,6 +165,11 @@ namespace Victuz.Areas.Identity.Pages.Account
                     {
                         var roleResult = await _userManager.AddToRoleAsync(user, Input.AccountType);
                     }
+                    else if (Input.AccountType == "Organizer")
+                    {
+                        var roleResult = await _userManager.AddToRoleAsync(user, Input.AccountType);
+                    }
+                    
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

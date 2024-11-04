@@ -51,16 +51,17 @@
                             @Html.DisplayFor(modelItem => item.Description)
                         </td>
                         <td>
-                                @{
-                                    var formattedDate = item.DateTime.HasValue ? item.DateTime.Value.ToString("dd/MM/yyyy HH:mm") : "";
-                                }
-                                @formattedDate
+                                @Html.DisplayFor(modelItem => item.DateTime)
+                               
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.MaxParticipants)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Category.Name)
+                            @foreach(var category in item.Categories)
+                            {
+                                @Html.DisplayFor(modelItem => category.Name)
+                            }
                         </td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.Id">Bewerken</a> |

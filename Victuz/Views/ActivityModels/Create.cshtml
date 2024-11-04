@@ -1,4 +1,4 @@
-﻿@model Victuz.Viewmodels.ActivityViewModel
+﻿@model Victuz.Models.ActivityModel
 
 @{
     ViewData["Title"] = "Create";
@@ -6,70 +6,51 @@
 
 <h1>Create</h1>
 
-<h4>Activity</h4>
+<h4>ActivityModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <label asp-for="DateTime" class="control-label"></label>
                 <input asp-for="DateTime" class="form-control" />
                 <span asp-validation-for="DateTime" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <label asp-for="MaxParticipants" class="control-label"></label>
                 <input asp-for="MaxParticipants" class="form-control" />
                 <span asp-validation-for="MaxParticipants" class="text-danger"></span>
             </div>
-
-             
             <div class="form-group">
-                <label asp-for="CategoryName" class="control-label"></label>
-                <select asp-for="CategoryName" class="form-control" asp-items="ViewBag.CategoryList">
-                    <option value="">-- Selecteer een Categorie --</option>
+                <label asp-for="CategoryIds" class="control-label"></label>
+                <select asp-for="CategoryIds" class="form-control" asp-items="ViewBag.CategoryIds" multiple></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="LocationId" class="control-label"></label>
+                <select asp-for="LocationId" class ="form-control" asp-items="ViewBag.LocationId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentType" class="control-label">Betalingstype</label>
+
+                <select asp-for="PaymentType" class="form-control">
+                    <option value="" disabled selected>Kies een betalingstype </option>
+                    <option value="FreeForEverybody">Gratis voor iedereen</option>
+                    <option value="FreeForMembers">Gratis voor leden, betaald voor niet leden</option>
+                    <option value="Paid">Betaald voor iedereen</option>
                 </select>
-                <span asp-validation-for="CategoryName" class="text-danger"></span>
+                <span asp-validation-for="PaymentType" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
-                <label asp-for="LocationName" class="control-label"></label>
-                <input asp-for="LocationName" class="form-control" />
-                <span asp-validation-for="LocationName" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="LocationStreet" class="control-label"></label>
-                <input asp-for="LocationStreet" class="form-control" />
-                <span asp-validation-for="LocationStreet" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="LocationHouseNumber" class="control-label"></label>
-                <input asp-for="LocationHouseNumber" class="form-control" />
-                <span asp-validation-for="LocationHouseNumber" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="LocationCity" class="control-label"></label>
-                <input asp-for="LocationCity" class="form-control" />
-                <span asp-validation-for="LocationCity" class="text-danger"></span>
-            </div>
-
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -82,7 +63,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
