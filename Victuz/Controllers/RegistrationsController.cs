@@ -241,7 +241,7 @@ namespace Victuz.Controllers
         public async Task<IActionResult> AttendanceList(int activityId)
         {
             var registrations = await _context.Registrations
-                .Where(r => r.Activity.Id == activityId)
+                .Where(r => r.Activity != null && r.Activity.Id == activityId)
                 .Include(r => r.Member)
                 .Include(r => r.Activity)
                 .ToListAsync();
@@ -257,15 +257,16 @@ namespace Victuz.Controllers
         [HttpPost]
         public async Task<IActionResult> MarkAttendance(int registrationId, bool isPresent)
         {
-            // Find the registration by ID
-            var registration = await _context.Registrations.FindAsync(registrationId);
+            var registration = await _context.Registrations
+                .Include(r => r.Activity) // Zorg ervoor dat Activity wordt ingeladen
+                .FirstOrDefaultAsync(r => r.Id == registrationId);
 
             if (registration == null)
             {
                 return NotFound();
             }
 
-            // Update the attendance status
+            // Update de aanwezigheid
             registration.IsPresent = isPresent;
             await _context.SaveChangesAsync();
 
