@@ -21,6 +21,11 @@
         {
             @Html.Partial("_NavbarBoardMember")
         }
+        else if(User.IsInRole("Organizer"))
+        {
+            @Html.Partial("_NavbarOrganizer")
+        }
+        
         
     }
     else
