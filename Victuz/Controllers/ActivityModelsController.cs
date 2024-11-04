@@ -40,6 +40,7 @@ namespace Victuz.Controllers
             var activityModel = await _context.Activities
                 .Include(a => a.Registrations)
                 .Include(a => a.Categories)
+                .Include(a => a.Location)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activityModel == null)
             {
