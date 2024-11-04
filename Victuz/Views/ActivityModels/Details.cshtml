@@ -43,6 +43,35 @@
         }
         <p><strong>Locatie:</strong> @Model.Activity.Location?.Name</p>
     </div>
+    <div class="payment-info">
+            @if (Model.Activity.PaymentType == "FreeForEverybody")
+            {
+
+            <p>
+                <strong>Betaling:</strong> Gratis voor iedereen
+            </p>
+            }
+            else if (Model.Activity.PaymentType == "FreeForMembers")
+            {
+            <p>
+                <strong>Betaling:</strong> Gratis voor leden, betaald voor niet leden
+            </p>
+            }
+            else if(Model.Activity.PaymentType == "Paid")
+            {
+            <p>
+                <strong>Betaling:</strong> Iedereen moet betalen
+            </p>
+            }
+            else
+            {
+            <p>
+                <strong>Betaling:</strong> Geen info 
+            </p>
+            }
+        
+
+    </div>
 
     <!-- Beschrijving sectie -->
     <div class="activity-description">
