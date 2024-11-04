@@ -18,7 +18,7 @@
                 <h1 class="display-4">Meest aankomende activiteit</h1>
                 <h2>@highlightActivity.Name</h2>
                 <p>@highlightActivity.Description</p>
-                <p class="activity-date">@highlightActivity.DateTime?.ToString("g")</p>
+                <p class="activity-date">@highlightActivity.DateTime.ToString("g")</p>
             </div>
         </a>
     </div>
@@ -36,7 +36,7 @@
                                 <div class="activity-card mb-2">
                                     <div class="activity-card-content">
                                         <div class="activity-date">
-                                            @eventItem.DateTime?.ToString("dd-MM-yyyy")
+                                            @eventItem.DateTime.ToString("dd-MM-yyyy")
                                         </div>
                                         <div class="activity-details">
                                             <h4 class="activity-name">@eventItem.Name</h4>
