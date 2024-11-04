@@ -15,6 +15,8 @@ namespace Victuz.Models
         public int LocationId { get; set; }
         public List<Category>? Categories { get; set; }
         public Location? Location { get; set; }
+        // FreeForEverybody, FreeForMembers, Paid 
+        public string PaymentType { get; set; }
         public ICollection<Registration>? Registrations { get; set; }
     }
 }
