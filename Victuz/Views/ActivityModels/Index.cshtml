@@ -1,67 +1,64 @@
 ﻿@model IEnumerable<Victuz.Models.ActivityModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Activiteiten";
 }
 
-<h1>Activiteit</h1>
+<h1 class="text-center mt-4">Activiteiten Overzicht</h1>
 
-<p>
-    <a asp-action="Create">Maak een nieuwe activiteit aan</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MaxParticipants)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryIds)
-            </th>
-            <th>Locatie</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="d-flex justify-content-between mb-3">
+    <a class="btn btn-primary" asp-action="Create">Nieuwe Activiteit Aanmaken</a>
+</div>
+
+<div class="container">
+    <div class="row">
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MaxParticipants)
-                </td>
-                <td>
-                    @foreach (var category in item.Categories)
-                    {
-                        <p>@category.Name</p>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Location.Name)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary font-weight-bold">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </h5>
+                        <p class="card-text">
+                            <span class="font-weight-bold">Beschrijving:</span>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </p>
+                        <p class="card-text">
+                            <span class="font-weight-bold">Datum:</span>
+                            @item.DateTime.ToString("dd-MM-yyyy HH:mm")
+                        </p>
+                        <p class="card-text">
+                            <span class="font-weight-bold">Max. Deelnemers:</span>
+                            @Html.DisplayFor(modelItem => item.MaxParticipants)
+                        </p>
+                        <p class="card-text">
+                            <span class="font-weight-bold">Categorieën:</span>
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var category in item.Categories)
+                                {
+                                    <li>@category.Name</li>
+                                }
+                            </ul>
+                        </p>
+                        <p class="card-text">
+                            <span class="font-weight-bold">Locatie:</span>
+                            @Html.DisplayFor(modelItem => item.Location.Name)
+                        </p>
+                        <div class="d-flex justify-content-between mt-3">
+                            <a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            <a class="btn btn-outline-secondary btn-sm" asp-action="Edit" asp-route-id="@item.Id">Bewerken</a>
+                            <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Verwijderen</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
