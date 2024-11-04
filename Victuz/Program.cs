@@ -75,7 +75,7 @@ namespace Victuz
 
         private static async Task CreateRoles(RoleManager<IdentityRole> roleManager)
         {
-            string[] roleNames = { "Member", "BoardMember" };
+            string[] roleNames = { "Member", "BoardMember", "Organizer" };
 
             foreach (var roleName in roleNames)
             {

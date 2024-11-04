@@ -1,16 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Victuz</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/theme.css" />
+    <link rel="stylesheet" href="~/css/theme.css" /> <!-- Bootswatch theme -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Victuz.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha384-3n3lHl8hiR3XgJrR7KwEKp0Dg5OtQZ1K4gT/AmiU8bcZAbHcKNFW5G3MLZauQ2MW" crossorigin="anonymous">
+
 </head>
 <body>
-    
     @if (User.Identity.IsAuthenticated)
     {
         @if (User.IsInRole("Member"))
@@ -21,14 +21,11 @@
         {
             @Html.Partial("_NavbarBoardMember")
         }
-        
     }
     else
     {
-        <!-- Default navbar for non-authenticated users -->
         @Html.Partial("_NavbarNotLoggedIn")
     }
-
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -36,7 +33,21 @@
         </main>
     </div>
 
-     
+    <footer class="footer bg-dark text-white mt-auto py-3">
+        <div class="container text-center">
+            <h5>Onze Partners</h5>
+            <div class="partners">
+                <img src="~/image/Partner 1.png" alt="Partner 1" class="img-fluid partner-logo">
+                <img src="~/image/Partner 2.png" alt="Partner 2" class="img-fluid partner-logo">
+            </div>
+            <div class="copyright mt-2 d-flex justify-content-center align-items-center">
+                <span>&copy; 2024</span> <!-- Verplaatst naar een <span> om het niet als link te maken -->
+                <a href="/" class="text-white copyright-link ml-2">Victuz.</a>
+                <a href="https://www.instagram.com/victuzzuyd" target="_blank" class="ml-2">
+                    <img src="~/image/instagram-logo.png" alt="Volg ons op Instagram" class="instagram-logo"> <!-- Instagram logo -->
+                </a>
+            </div>
+        </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
