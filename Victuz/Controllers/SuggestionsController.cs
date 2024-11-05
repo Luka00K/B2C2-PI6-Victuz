@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -26,21 +27,66 @@ namespace Victuz.Controllers
         }
 
         // GET: Suggestions/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var suggestion = await _context.Suggestions
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(s => s.Likes)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
             if (suggestion == null)
-            {
                 return NotFound();
+
+            // Haal het gebruikers-ID en de rol van de ingelogde gebruiker op
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            bool isBoardMember = User.IsInRole("BoardMember");
+
+            // Bepaal het aantal likes
+            int likeCount = suggestion.Likes.Count;
+
+            // Sla de like-informatie op in ViewBag
+            ViewBag.IsBoardMember = isBoardMember;
+            ViewBag.LikeCount = likeCount;
+
+            // Als de gebruiker geen BoardMember is, controleer dan of hij het voorstel al geliket heeft
+            if (!isBoardMember)
+            {
+                bool isLikedByCurrentUser = suggestion.Likes.Any(like => like.UserId == userId);
+                ViewBag.IsLikedByCurrentUser = isLikedByCurrentUser;
             }
 
             return View(suggestion);
+        }
+
+        // POST: Suggestions/ToggleLike
+        [HttpPost]
+        public async Task<IActionResult> ToggleLike(int id)
+        {
+            var suggestion = await _context.Suggestions
+                .Include(s => s.Likes)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (suggestion == null)
+                return NotFound();
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Controleer of de gebruiker al een like heeft gegeven
+            var existingLike = suggestion.Likes.FirstOrDefault(like => like.UserId == userId);
+
+            if (existingLike == null)
+            {
+                // Voeg een like toe als deze nog niet bestaat
+                suggestion.Likes.Add(new Like { UserId = userId, SuggestionId = suggestion.Id });
+            }
+            else
+            {
+                // Verwijder de like als deze al bestaat
+                suggestion.Likes.Remove(existingLike);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = id });
         }
 
         // GET: Suggestions/Create
@@ -50,8 +96,6 @@ namespace Victuz.Controllers
         }
 
         // POST: Suggestions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Id,Description")] Suggestion suggestion)
@@ -82,11 +126,9 @@ namespace Victuz.Controllers
         }
 
         // POST: Suggestions/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Description")] Suggestion suggestion)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Title")] Suggestion suggestion)
         {
             if (id != suggestion.Id)
             {
