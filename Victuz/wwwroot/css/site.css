@@ -209,3 +209,11 @@
     gap: 10px;
     z-index: 10;
 }
+
+.attendance-checkbox {
+    padding-left: 60px; 
+}
+
+.SaveAttendance-button {
+    margin-top: 20px;
+}
