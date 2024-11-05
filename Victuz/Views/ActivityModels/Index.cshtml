@@ -47,7 +47,7 @@
                             @Html.DisplayFor(modelItem => item.Location.Name)
                         </p>
                   
-                      @if (User.IsInRole("BoardMember"))
+                      @if (User.IsInRole("BoardMember") && item.Organizer != null)
                       {
                           <p class="card-text">
                               <span class="font-weight-bold">Organisator:</span>
@@ -98,3 +98,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+}

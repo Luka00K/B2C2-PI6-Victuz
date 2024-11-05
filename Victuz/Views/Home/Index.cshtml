@@ -62,7 +62,12 @@
                 <p><strong>Victuz</strong> staat voor <strong>Verenigde ICT-ers uit Zuid-Limburg</strong>. Sinds schooljaar ’23-’24 organiseren studenten activiteiten <strong>VAN studenten VOOR studenten</strong>.</p>
                 <p>We hebben de steun van de academie en docenten nodig om een studievereniging op te richten. Dit vraagt om officiële statuten, een bankrekening, en vooral <strong>activiteiten</strong>!</p>
                 <p>Sluit je aan bij Victuz en bouw mee aan een sterke ICT-community!</p>
-                <a href="Identity/Account/Register"  class="btn btn-primary">Lid worden</a>
+                
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <a href="Identity/Account/Register" class="btn btn-primary">Lid worden</a>
+
+                }
             </div>
         </div>
     </div>
