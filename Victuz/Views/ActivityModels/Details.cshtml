@@ -11,8 +11,8 @@
         De activiteit is vol
     </div>
 }
-<!-- Bewerken en Verwijderen knoppen voor BoardMember -->
-@if (User.Identity.IsAuthenticated && (User.IsInRole("BoardMember")))
+<!-- Bewerken en Verwijderen knoppen voor BoardMembers en Organisatoren -->
+@if (User.Identity.IsAuthenticated && (User.IsInRole("BoardMember") || User.IsInRole("Organizer")))
 {
     <div class="activity-admin-buttons">
         <form asp-action="Edit" asp-controller="ActivityModels" method="get" style="display:inline;">
@@ -24,6 +24,11 @@
             <input type="hidden" name="id" value="@Model.Activity?.Id" />
             <button type="submit" class="btn btn-danger">Verwijderen</button>
         </form>
+
+        <!-- Link naar de aanwezigheidslijst voor deze activiteit -->
+        <a asp-action="AttendanceList" asp-controller="Registrations" asp-route-activityId="@Model.ActivityId" class="btn btn-primary">
+            Bekijk Aanwezigheid
+        </a>
     </div>
 }
 
