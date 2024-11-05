@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Victuz.Data;
@@ -25,7 +24,11 @@ namespace VictuzAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ActivityModel>>> GetActivities()
         {
-            return await _context.Activities.ToListAsync();
+            return await _context.Activities
+                .Include(a => a.Categories)
+                .Include(a => a.Location)
+                .Include(a => a.Registrations)
+                .ToListAsync();
         }
 
         // GET: api/ActivityModels/5
@@ -40,23 +43,69 @@ namespace VictuzAPI.Controllers
 
             if (activityModel == null)
             {
-                return NotFound();
+                return NotFound(new { Message = $"Activiteit met ID {id} niet gevonden." });
             }
 
             return activityModel;
         }
 
-        // PUT: api/ActivityModels/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutActivityModel(int? id, ActivityModel activityModel)
+        // POST: api/ActivityModels
+        [HttpPost]
+        public async Task<ActionResult<ActivityModel>> PostActivityModel(
+            [FromForm] string name,
+            [FromForm] string description,
+            [FromForm] DateTime dateTime,
+            [FromForm] int maxParticipants,
+            [FromForm] List<int> categoryIds,
+            [FromForm] int locationId,
+            [FromForm] string paymentType)
         {
-            if (id != activityModel.Id)
+            var activityModel = new ActivityModel
             {
-                return BadRequest();
+                Name = name,
+                Description = description,
+                DateTime = dateTime,
+                MaxParticipants = maxParticipants,
+                CategoryIds = categoryIds,
+                LocationId = locationId,
+                PaymentType = paymentType
+            };
+
+            _context.Activities.Add(activityModel);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetActivityModel), new { id = activityModel.Id }, activityModel);
+        }
+
+
+        // PUT: api/ActivityModels/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutActivityModel(
+            int id,
+            [FromForm] string name,
+            [FromForm] string description,
+            [FromForm] DateTime dateTime,
+            [FromForm] int maxParticipants,
+            [FromForm] List<int> categoryIds,
+            [FromForm] int locationId,
+            [FromForm] string paymentType)
+        {
+            var activityModel = await _context.Activities
+                .Include(a => a.Categories)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (activityModel == null)
+            {
+                return NotFound(new { Message = $"Activiteit met ID {id} niet gevonden." });
             }
 
-            _context.Entry(activityModel).State = EntityState.Modified;
+            activityModel.Name = name;
+            activityModel.Description = description;
+            activityModel.DateTime = dateTime;
+            activityModel.MaxParticipants = maxParticipants;
+            activityModel.CategoryIds = categoryIds;
+            activityModel.LocationId = locationId;
+            activityModel.PaymentType = paymentType;
 
             try
             {
@@ -64,32 +113,12 @@ namespace VictuzAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ActivityModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(500, new { Message = "Er is iets fout gegaan tijdens het bijwerken van de activiteit." });
             }
 
             return NoContent();
         }
 
-        // POST: api/ActivityModels
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<ActivityModel>> PostActivityModel(ActivityModel activityModel)
-        {
-            activityModel.Id = null;
-
-
-            _context.Activities.Add(activityModel);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetActivityModel", new { id = activityModel.Id }, activityModel);
-        }
 
         // DELETE: api/ActivityModels/5
         [HttpDelete("{id}")]
@@ -98,11 +127,19 @@ namespace VictuzAPI.Controllers
             var activityModel = await _context.Activities.FindAsync(id);
             if (activityModel == null)
             {
-                return NotFound();
+                return NotFound(new { Message = $"Activiteit met ID {id} niet gevonden." });
             }
 
             _context.Activities.Remove(activityModel);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return StatusCode(500, new { Message = "Er is iets fout gegaan tijdens het verwijderen van de activiteit." });
+            }
 
             return NoContent();
         }
