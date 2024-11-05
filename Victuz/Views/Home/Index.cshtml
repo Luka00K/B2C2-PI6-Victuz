@@ -23,7 +23,8 @@
         </a>
     </div>
 
-        <div class="activities-section col-md-6">
+    <div class="row">
+        <div class="activities-section col-md-8">
             <h3>Aankomende Activiteiten</h3>
             <div class="scrollable-activities">
                 @{
@@ -51,6 +52,21 @@
                     {
                         <p>Nog geen activiteiten gepland. Check binnenkort nog eens om je in te schrijven voor de nieuwste activiteiten.</p>
                     }
+                }
+            </div>
+        </div>
+
+        <div class="col-md-4 mt-4">
+            <div class="reclame-praatje p-4 border rounded h-100">
+                <h2>Word deel van Victuz!</h2>
+                <p><strong>Victuz</strong> staat voor <strong>Verenigde ICT-ers uit Zuid-Limburg</strong>. Sinds schooljaar ’23-’24 organiseren studenten activiteiten <strong>VAN studenten VOOR studenten</strong>.</p>
+                <p>We hebben de steun van de academie en docenten nodig om een studievereniging op te richten. Dit vraagt om officiële statuten, een bankrekening, en vooral <strong>activiteiten</strong>!</p>
+                <p>Sluit je aan bij Victuz en bouw mee aan een sterke ICT-community!</p>
+                
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <a href="Identity/Account/Register" class="btn btn-primary">Lid worden</a>
+
                 }
             </div>
         </div>
