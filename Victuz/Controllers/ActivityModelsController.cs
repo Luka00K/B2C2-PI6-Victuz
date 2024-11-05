@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,8 +26,17 @@ namespace Victuz.Controllers
         // GET: ActivityModels
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Activities.Include(a => a.Location).Include(a => a.Categories);
-            return View(await applicationDbContext.ToListAsync());
+            if(User.IsInRole("Organizer"))
+            {
+                var applicationDbContext = _context.Activities.Include(a => a.Location).Include(a => a.Categories).Include(a => a.Organizer).Where(a => a.OrganizerId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                var applicationDbContext = _context.Activities.Include(a => a.Location).Include(a => a.Categories).Include(a => a.Organizer);
+                return View(await applicationDbContext.ToListAsync());
+            }
+            
         }
 
         // GET: ActivityModels/Details/5
@@ -68,10 +78,20 @@ namespace Victuz.Controllers
         }
 
         // GET: ActivityModels/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var organizers = await _userManager.GetUsersInRoleAsync("Organizer");
+
             ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name");
             ViewData["CategoryIds"] = new MultiSelectList(_context.Categories, "Id", "Name");
+            ViewData["OrganizerId"] = new SelectList(organizers.Select(o => new
+            {
+                Id = o.Id,
+                FullName = $"{o.FirstName} {o.LastName}"
+            })
+            , "Id", "FullName");
+
+
             return View();
         }
 
@@ -80,7 +100,7 @@ namespace Victuz.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryIds,LocationId, PaymentType")] ActivityModel activityModel)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryIds,LocationId, PaymentType, OrganizerId")] ActivityModel activityModel)
         {
             if (ModelState.IsValid)
             {
@@ -91,8 +111,16 @@ namespace Victuz.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            var organizers = await _userManager.GetUsersInRoleAsync("Organizer");
             ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name");
             ViewData["CategoryIds"] = new MultiSelectList(_context.Categories, "Id", "Name");
+            ViewData["OrganizerId"] = new SelectList(organizers.Select(o => new
+            {
+                Id = o.Id,
+                FullName = $"{o.FirstName} {o.LastName}"
+            })
+            , "Id", "FullName");
             return View(activityModel);
         }
 
@@ -109,7 +137,17 @@ namespace Victuz.Controllers
             {
                 return NotFound();
             }
+
             ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", activityModel.LocationId);
+
+            var organizers = await _userManager.GetUsersInRoleAsync("Organizer");
+
+            ViewData["OrganizerId"] = new SelectList(organizers.Select(o => new
+            {
+                Id = o.Id,
+                FullName = $"{o.FirstName} {o.LastName}"
+            })
+            , "Id", "FullName", activityModel.Organizer);
             return View(activityModel);
         }
 
@@ -118,7 +156,7 @@ namespace Victuz.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryIds,LocationId,PaymentType")] ActivityModel activityModel)
+        public async Task<IActionResult> Edit(int? id, [Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryIds,LocationId,PaymentType,OrganizerId")] ActivityModel activityModel)
         {
             if (id != activityModel.Id)
             {
@@ -146,6 +184,15 @@ namespace Victuz.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", activityModel.LocationId);
+            
+            var organizers = await _userManager.GetUsersInRoleAsync("Organizer");
+
+            ViewData["OrganizerId"] = new SelectList(organizers.Select(o => new
+            {
+                Id = o.Id,
+                FullName = $"{o.FirstName} {o.LastName}"
+            })
+            , "Id", "FullName", activityModel.Organizer);
             return View(activityModel);
         }
 

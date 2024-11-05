@@ -30,6 +30,15 @@
             <th>
                 @Html.DisplayNameFor(model => model.Location)
             </th>
+            <th>
+                Betaling
+            </th>
+            @if (User.IsInRole("BoardMember"))
+            {
+                <th>
+                    Organisator
+                </th>
+            }
             <th></th>
         </tr>
     </thead>
@@ -58,9 +67,44 @@
                 @Html.DisplayFor(modelItem => item.Location.Id)
             </td>
             <td>
+                    @if (item.PaymentType == "FreeForEverybody")
+                    {
+                        <p> Gratis </p>
+                    }
+                    else if (item.PaymentType == "FreeForMembers")
+                    {
+                        <p> Gratis voor leden </p>
+                    }
+                    else if(item.PaymentType == "Paid")
+                    {
+                        <p> Betaald </p>
+                    }
+                    else
+                    {
+                        <p> Geen info </p>
+                    }
+            </td>
+                    @if(User.IsInRole("BoardMember"))
+                    {
+                        if(item.Organizer != null)
+                        {
+                            <td>
+                            <p>@item.Organizer.FirstName @item.Organizer.LastName</p>
+
+                            </td>
+                        }
+                        else
+                        {
+                        }
+                    }
+            <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @if (User.IsInRole("BoardMember"))
+                {
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+
+                }
             </td>
         </tr>
 }
