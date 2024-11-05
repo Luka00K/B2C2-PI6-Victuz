@@ -48,26 +48,24 @@ namespace Victuz.Controllers
             }
 
             var activityModel = await _context.Activities
-                .Include(a => a.Registrations) // Laad registraties om de status te controleren
+                .Include(a => a.Registrations)
                 .Include(a => a.Categories)
+                .Include(a => a.Location)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activityModel == null)
             {
                 return NotFound();
             }
 
-            // Haal de ingelogde gebruiker op
             var user = await _userManager.GetUserAsync(User);
             bool isRegistered = false;
 
-            // Controleer of de gebruiker is geregistreerd voor deze activiteit
             if (user != null)
             {
                 isRegistered = await _context.Registrations
                     .AnyAsync(r => r.Activity.Id == id && r.Member.Id == user.Id);
             }
 
-            // Maak het viewmodel aan
             var viewModel = new ActivityDetailsViewModel
             {
                 Activity = activityModel,
@@ -96,8 +94,6 @@ namespace Victuz.Controllers
         }
 
         // POST: ActivityModels/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryIds,LocationId, PaymentType, OrganizerId")] ActivityModel activityModel)
@@ -105,8 +101,8 @@ namespace Victuz.Controllers
             if (ModelState.IsValid)
             {
                 activityModel.Categories = await _context.Categories
-                .Where(c => activityModel.CategoryIds.Contains(c.Id))
-                 .ToListAsync();
+                    .Where(c => activityModel.CategoryIds.Contains(c.Id))
+                    .ToListAsync();
                 _context.Add(activityModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -132,13 +128,21 @@ namespace Victuz.Controllers
                 return NotFound();
             }
 
-            var activityModel = await _context.Activities.FindAsync(id);
+            var activityModel = await _context.Activities
+                .Include(a => a.Categories)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
             if (activityModel == null)
             {
                 return NotFound();
             }
 
-            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", activityModel.LocationId);
+
+            activityModel.CategoryIds = activityModel.Categories.Select(c => c.Id).ToList();
+
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name", activityModel.LocationId);
+            ViewData["CategoryIds"] = new MultiSelectList(_context.Categories, "Id", "Name", activityModel.CategoryIds);
+
 
             var organizers = await _userManager.GetUsersInRoleAsync("Organizer");
 
@@ -148,12 +152,11 @@ namespace Victuz.Controllers
                 FullName = $"{o.FirstName} {o.LastName}"
             })
             , "Id", "FullName", activityModel.Organizer);
+
             return View(activityModel);
         }
 
         // POST: ActivityModels/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id, [Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryIds,LocationId,PaymentType,OrganizerId")] ActivityModel activityModel)
@@ -167,7 +170,42 @@ namespace Victuz.Controllers
             {
                 try
                 {
-                    _context.Update(activityModel);
+                    // Haal de bestaande activiteit op inclusief de categorieën
+                    var existingActivity = await _context.Activities
+                        .Include(a => a.Categories)
+                        .FirstOrDefaultAsync(a => a.Id == id);
+
+                    if (existingActivity == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update de eigenschappen van de activiteit
+                    existingActivity.Name = activityModel.Name;
+                    existingActivity.Description = activityModel.Description;
+                    existingActivity.DateTime = activityModel.DateTime;
+                    existingActivity.MaxParticipants = activityModel.MaxParticipants;
+                    existingActivity.LocationId = activityModel.LocationId;
+                    existingActivity.OrganizerId = activityModel.OrganizerId;
+                    existingActivity.PaymentType = activityModel.PaymentType;
+
+                    // Verwijder de bestaande categorieën
+                    existingActivity.Categories.Clear();
+
+                    // Voeg de nieuwe categorieën toe
+                    if (activityModel.CategoryIds != null)
+                    {
+                        var selectedCategories = await _context.Categories
+                            .Where(c => activityModel.CategoryIds.Contains(c.Id))
+                            .ToListAsync();
+
+                        foreach (var category in selectedCategories)
+                        {
+                            existingActivity.Categories.Add(category);
+                        }
+                    }
+
+                    _context.Update(existingActivity);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -183,7 +221,11 @@ namespace Victuz.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", activityModel.LocationId);
+
+
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name", activityModel.LocationId);
+            ViewData["CategoryIds"] = new MultiSelectList(_context.Categories, "Id", "Name", activityModel.CategoryIds);
+
             
             var organizers = await _userManager.GetUsersInRoleAsync("Organizer");
 
@@ -193,6 +235,7 @@ namespace Victuz.Controllers
                 FullName = $"{o.FirstName} {o.LastName}"
             })
             , "Id", "FullName", activityModel.Organizer);
+
             return View(activityModel);
         }
 
@@ -235,21 +278,21 @@ namespace Victuz.Controllers
             return _context.Activities.Any(e => e.Id == id);
         }
 
-
         public IActionResult Search()
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult Search(string SearchQuery)
         {
             var activities = _context.Activities
                 .Include(a => a.Categories)
                 .Where(a => a.Name.Contains(SearchQuery) ||
-                a.Description.Contains(SearchQuery) ||
-                a.Categories.Any(c => c.Name.Contains(SearchQuery)) ||
-                a.Location.City.Contains(SearchQuery) ||
-                a.Location.Street.Contains(SearchQuery));
+                            a.Description.Contains(SearchQuery) ||
+                            a.Categories.Any(c => c.Name.Contains(SearchQuery)) ||
+                            a.Location.City.Contains(SearchQuery) ||
+                            a.Location.Street.Contains(SearchQuery));
             return View(activities);
         }
     }

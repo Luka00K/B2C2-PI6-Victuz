@@ -5,6 +5,7 @@
 }
 
 <h1>@Model.Activity.Name</h1>
+
 @if (Model.AvailableSpots == 0)
 {
     <div class="alert alert-warning">
@@ -37,11 +38,15 @@
     <div class="activity-info">
         <p><strong>Datum:</strong> @Model.Activity.DateTime.ToString("dd-MM-yyyy")</p>
         <p><strong>Tijd:</strong> @Model.Activity.DateTime.ToString("HH:mm")</p>
-        @foreach(var category in Model.Activity.Categories)
+        @foreach (var category in Model.Activity.Categories)
         {
             <p><strong>Categorie:</strong> @category.Name</p>
         }
-        <p><strong>Locatie:</strong> @Model.Activity.Location?.Name</p>
+
+        <p><strong>Locatie Naam:</strong> @Model.LocationName</p>
+        <p><strong>Straat:</strong> @Model.Street</p>
+        <p><strong>Huisnummer:</strong> @Model.HouseNumber</p>
+        <p><strong>Stad:</strong> @Model.City</p>
     </div>
     <div class="payment-info">
             @if (Model.Activity.PaymentType == "FreeForEverybody")

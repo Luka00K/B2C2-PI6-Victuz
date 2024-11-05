@@ -1,48 +1,88 @@
 ﻿@model Victuz.Models.ActivityModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Activiteit Aanmaken";
 }
 
-<h1>Create</h1>
+<h1 class="text-center">Nieuwe Activiteit Aanmaken</h1>
 
-<h4>ActivityModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateTime" class="control-label"></label>
-                <input asp-for="DateTime" class="form-control" />
-                <span asp-validation-for="DateTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaxParticipants" class="control-label"></label>
-                <input asp-for="MaxParticipants" class="form-control" />
-                <span asp-validation-for="MaxParticipants" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CategoryIds" class="control-label"></label>
-                <select asp-for="CategoryIds" class="form-control" asp-items="ViewBag.CategoryIds" multiple></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="LocationId" class="control-label"></label>
-                <select asp-for="LocationId" class ="form-control" asp-items="ViewBag.LocationId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="PaymentType" class="control-label">Betalingstype</label>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Activiteit</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                         
+                        <div class="form-group mb-3">
+                            <label asp-for="Name" class="control-label"><i class="fas fa-edit"></i> Naam van de Activiteit</label>
+                            <input asp-for="Name" class="form-control" placeholder="Vul de naam van de activiteit in" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
 
+                         
+                        <div class="form-group mb-3">
+                            <label asp-for="Description" class="control-label"><i class="fas fa-align-left"></i> Beschrijving</label>
+                            <textarea asp-for="Description" class="form-control" placeholder="Geef een beschrijving van de activiteit"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                         
+                        <div class="form-group mb-3">
+                            <label asp-for="DateTime" class="control-label"><i class="fas fa-calendar-alt"></i> Datum & Tijd</label>
+                            <input asp-for="DateTime" type="datetime-local" class="form-control" />
+                            <span asp-validation-for="DateTime" class="text-danger"></span>
+                        </div>
+                         
+                        <div class="form-group mb-3">
+                            <label asp-for="MaxParticipants" class="control-label"><i class="fas fa-users"></i> Maximaal aantal deelnemers</label>
+                            <input asp-for="MaxParticipants" class="form-control" placeholder="Vul het maximum aantal deelnemers in" />
+                            <span asp-validation-for="MaxParticipants" class="text-danger"></span>
+                        </div>
+
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="CategoryIds" class="control-label"><i class="fas fa-tags"></i> Categorieën</label>
+                            <select asp-for="CategoryIds" class="form-control" asp-items="ViewBag.CategoryIds" multiple>
+                                <option value="" disabled>Kies één of meerdere categorieën</option>
+                            </select>
+                        </div>
+                         
+                        <div class="form-group mb-3">
+                            <label asp-for="LocationId" class="control-label"><i class="fas fa-map-marker-alt"></i> Locatie</label>
+                            <select asp-for="LocationId" class="form-control" asp-items="ViewBag.LocationId">
+                                <option value="" disabled selected>Kies een locatie</option>
+                            </select>
+                        </div>
+
+                         
+                        <div class="form-group mb-3">
+                            <label asp-for="PaymentType" class="control-label"><i class="fas fa-credit-card"></i> Betalingstype</label>
+                            <select asp-for="PaymentType" class="form-control">
+                                <option value="" disabled selected>Kies een betalingstype</option>
+                                <option value="FreeForEverybody">Gratis voor iedereen</option>
+                                <option value="FreeForMembers">Gratis voor leden, betaald voor niet-leden</option>
+                                <option value="Paid">Betaald voor iedereen</option>
+                            </select>
+                            <span asp-validation-for="PaymentType" class="text-danger"></span>
+                        </div>
+                  
+                       <div class="form-group">
+                        <label asp-for="OrganizerId" class="control-label"></label>
+                        <select asp-for="OrganizerId" class="form-control" asp-items="ViewBag.OrganizerId">
+                           <option value="" disabled selected>Kies een organisator (optioneel) </option>
+                       </select>
+                        </div>
+ 
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-save"></i> Aanmaken</button>
+                            <a asp-action="Index" class="btn btn-secondary btn-lg ml-3">Annuleren</a>
+                        </div>
+                    </form>
+                </div>
                 <select asp-for="PaymentType" class="form-control">
                     <option value="" disabled selected>Kies een betalingstype </option>
                     <option value="FreeForEverybody">Gratis voor iedereen</option>
@@ -57,17 +97,16 @@
                     <option value="" disabled selected>Kies een organisator (optioneel) </option>
                 </select>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+           <div class="text-center mt-4">
+              <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-save"></i> Aanmaken</button>
+              <a asp-action="Index" class="btn btn-secondary btn-lg ml-3">Annuleren</a>
+           </div>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
