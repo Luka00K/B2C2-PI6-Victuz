@@ -6,6 +6,7 @@
 
 <h1 class="text-center mt-4">Activiteiten Overzicht</h1>
 
+
 <div class="d-flex justify-content-between mb-3">
     <a class="btn btn-primary" asp-action="Create">Nieuwe Activiteit Aanmaken</a>
 </div>
@@ -45,10 +46,46 @@
                             <span class="font-weight-bold">Locatie:</span>
                             @Html.DisplayFor(modelItem => item.Location.Name)
                         </p>
+                  
+                      @if (User.IsInRole("BoardMember"))
+                      {
+                          <p class="card-text">
+                              <span class="font-weight-bold">Organisator:</span>
+                              @item.Organizer.FirstName @item.Organizer.LastName
+                          </p>
+                      }
+                  <p>
+                    <span class="font-weight-bold">Betaling:</span>
+                    @if (item.PaymentType == "FreeForEverybody")
+                    {
+                        <p> Gratis </p>
+                    }
+                    else if (item.PaymentType == "FreeForMembers")
+                    {
+                        <p> Gratis voor leden </p>
+                    }
+                    else if(item.PaymentType == "Paid")
+                    {
+                        <p> Betaald </p>
+                    }
+                    else
+                    {
+                        <p> Geen info </p>
+                    }
+                  </p>  
+                  
+                  
+                  
+                  
+                       
+                  
                         <div class="d-flex justify-content-between mt-3">
                             <a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a>
                             <a class="btn btn-outline-secondary btn-sm" asp-action="Edit" asp-route-id="@item.Id">Bewerken</a>
-                            <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Verwijderen</a>
+                            @if (User.IsInRole("BoardMember"))
+                            {
+                                <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Verwijderen</a>
+                            }
                         </div>
                     </div>
                 </div>
@@ -61,4 +98,3 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}

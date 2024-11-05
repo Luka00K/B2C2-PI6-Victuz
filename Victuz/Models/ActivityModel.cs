@@ -30,6 +30,8 @@ namespace Victuz.Models
         public Location? Location { get; set; }
         // FreeForEverybody, FreeForMembers, Paid 
         public string PaymentType { get; set; }
+        public string? OrganizerId { get; set; }
+        public Organizer? Organizer { get; set; }
         public ICollection<Registration>? Registrations { get; set; }
     }
 }

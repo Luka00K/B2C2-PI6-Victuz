@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Victuz.Data;
 
@@ -11,9 +12,11 @@ using Victuz.Data;
 namespace Victuz.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241104223349_registerwithoutaccount")]
+    partial class registerwithoutaccount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -199,9 +202,6 @@ namespace Victuz.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OrganizerId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("PaymentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -209,8 +209,6 @@ namespace Victuz.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
-
-                    b.HasIndex("OrganizerId");
 
                     b.ToTable("Activities");
                 });
@@ -274,8 +272,8 @@ namespace Victuz.Data.Migrations
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -407,13 +405,6 @@ namespace Victuz.Data.Migrations
                     b.HasDiscriminator().HasValue("Member");
                 });
 
-            modelBuilder.Entity("Victuz.Models.Organizer", b =>
-                {
-                    b.HasBaseType("Victuz.Models.Person");
-
-                    b.HasDiscriminator().HasValue("Organizer");
-                });
-
             modelBuilder.Entity("ActivityModelCategory", b =>
                 {
                     b.HasOne("Victuz.Models.ActivityModel", null)
@@ -488,13 +479,7 @@ namespace Victuz.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Victuz.Models.Organizer", "Organizer")
-                        .WithMany()
-                        .HasForeignKey("OrganizerId");
-
                     b.Navigation("Location");
-
-                    b.Navigation("Organizer");
                 });
 
             modelBuilder.Entity("Victuz.Models.Registration", b =>
