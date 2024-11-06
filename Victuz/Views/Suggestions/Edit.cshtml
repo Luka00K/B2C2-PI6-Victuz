@@ -12,7 +12,7 @@
     <div class="col-md-6">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+           
 
             <!-- Titel veld -->
             <div class="form-group mb-3">
@@ -28,12 +28,7 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
-            <!-- Naam Lid veld -->
-            <div class="form-group mb-3">
-                <label asp-for="Member" class="control-label">Naam Lid</label>
-                <input asp-for="Member" class="form-control" />
-                <span asp-validation-for="Member" class="text-danger"></span>
-            </div>
+            <input asp-for="MemberId" type="hidden" />
 
             <div class="form-group">
                 <input type="submit" value="Opslaan" class="btn btn-success" />
