@@ -96,6 +96,12 @@
             <p><strong>Beschikbare plekken:</strong> @Model.AvailableSpots</p>
         }
 
+        @if (User.IsInRole("BoardMember") || User.IsInRole("Organizer"))
+        {
+            <p><strong>Aanwezigheid:</strong> @Model.Activity.Registrations.Where(r => r.IsPresent == true).Count() / @Model.Activity.Registrations.Count() </p>
+
+        }
+
         @if (!User.Identity.IsAuthenticated || User.IsInRole("Member"))
         {
             if (Model.IsRegistered)
