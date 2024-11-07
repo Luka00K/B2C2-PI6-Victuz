@@ -26,13 +26,10 @@
                 <textarea asp-for="Description" class="form-control" placeholder="Beschrijf het voorstel" rows="4"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+            
 
-            <!-- Naam Lid veld -->
-            <div class="form-group mb-3">
-                <label asp-for="Member" class="form-label">Naam Lid</label>
-                <input asp-for="Member" class="form-control" placeholder="Voer je naam in" />
-                <span asp-validation-for="Member" class="text-danger"></span>
-            </div>
+            <input asp-for="MemberId" value="@ViewBag.MemberId" hidden />
+
 
             <!-- Knoppen -->
             <div class="form-group">
