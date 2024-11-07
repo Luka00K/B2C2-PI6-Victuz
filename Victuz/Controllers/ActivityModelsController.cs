@@ -98,6 +98,28 @@ namespace Victuz.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,DateTime,MaxParticipants,CategoryIds,LocationId, PaymentType, OrganizerId")] ActivityModel activityModel)
         {
+
+            var organizers = await _userManager.GetUsersInRoleAsync("Organizer");
+
+
+
+            var location = await _context.Locations.FindAsync(activityModel.LocationId);
+            if (activityModel.MaxParticipants > location.MaxCapacity)
+            {
+                TempData["ErrorMessage"] = $"Het maximale aantal deelnemers mag niet groter zijn dan de maximale capaciteit van de locatie ({location.MaxCapacity}).";
+                ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name");
+                ViewData["CategoryIds"] = new MultiSelectList(_context.Categories, "Id", "Name");
+                ViewData["OrganizerId"] = new SelectList(organizers.Select(o => new
+                {
+                    Id = o.Id,
+                    FullName = $"{o.FirstName} {o.LastName}"
+                })
+                , "Id", "FullName");
+                return View(activityModel);
+            }
+
+
+
             if (ModelState.IsValid)
             {
                 activityModel.Categories = await _context.Categories
@@ -108,7 +130,6 @@ namespace Victuz.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var organizers = await _userManager.GetUsersInRoleAsync("Organizer");
             ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name");
             ViewData["CategoryIds"] = new MultiSelectList(_context.Categories, "Id", "Name");
             ViewData["OrganizerId"] = new SelectList(organizers.Select(o => new
@@ -165,6 +186,23 @@ namespace Victuz.Controllers
             {
                 return NotFound();
             }
+            var organizers = await _userManager.GetUsersInRoleAsync("Organizer");
+
+            var location = await _context.Locations.FindAsync(activityModel.LocationId);
+            if (activityModel.MaxParticipants > location.MaxCapacity)
+            {
+                TempData["ErrorMessage"] = $"Het maximale aantal deelnemers mag niet groter zijn dan de maximale capaciteit van de locatie ({location.MaxCapacity}).";
+                ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name");
+                ViewData["CategoryIds"] = new MultiSelectList(_context.Categories, "Id", "Name");
+                ViewData["OrganizerId"] = new SelectList(organizers.Select(o => new
+                  {
+                      Id = o.Id,
+                      FullName = $"{o.FirstName} {o.LastName}"
+                  })
+            , "Id", "FullName", activityModel.Organizer);
+                return View(activityModel);
+            }
+
 
             if (ModelState.IsValid)
             {
@@ -227,7 +265,6 @@ namespace Victuz.Controllers
             ViewData["CategoryIds"] = new MultiSelectList(_context.Categories, "Id", "Name", activityModel.CategoryIds);
 
             
-            var organizers = await _userManager.GetUsersInRoleAsync("Organizer");
 
             ViewData["OrganizerId"] = new SelectList(organizers.Select(o => new
             {
