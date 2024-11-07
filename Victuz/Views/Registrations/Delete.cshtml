@@ -1,21 +1,20 @@
 ﻿@model Victuz.Models.Registration
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Uitschrijven";
 }
 
-<h1>Delete</h1>
+<h1>Uitschrijven</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Weet u zeker dat u zich wilt uitschrijven voor deze activiteit?</h3>
 <div>
-    <h4>Registration</h4>
     <hr />
     <dl class="row">
     </dl>
-    
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Uitschrijven" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary ms-2">Terug naar overzicht</a>
     </form>
 </div>
