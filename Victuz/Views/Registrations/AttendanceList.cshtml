@@ -8,14 +8,25 @@
 
 <table>
     <tr>
-        <th>Deelnemer</th>
-        <th>Aanwezig</th>
+        <th>Naam deelnemers</th>
+        <th class="attendance-checkbox">Aanwezig</th>
     </tr>
     @foreach (var registration in Model)
     {
         <tr>
-            <td>@registration.Member.FirstName</td>
             <td>
+                @if (registration.Member != null)
+                {
+                    <!-- Als de Member bestaat, toon de voornaam van de Member -->
+                    @registration.Member.FirstName @: @registration.Member.LastName
+                }
+                else
+                {
+                    <!-- Als de Member niet bestaat, gebruik de FirstName en LastName van Registration -->
+                    @registration.FirstName @: @registration.LastName
+                }
+            </td>
+            <td class="attendance-checkbox">
                 <form asp-action="MarkAttendance" method="post">
                     <input type="hidden" name="registrationId" value="@registration.Id" />
                     <input type="checkbox" name="isPresent" value="true"
@@ -25,3 +36,8 @@
         </tr>
     }
 </table>
+
+<!-- Terug naar homepage knop -->
+<div class="SaveAttendance-button">
+    <a asp-action="Index" asp-controller="Home" class="btn btn-primary">Opslaan</a>
+</div>

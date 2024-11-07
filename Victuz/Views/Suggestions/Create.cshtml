@@ -1,47 +1,43 @@
 ﻿@model Victuz.Models.Suggestion
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Voorstel Indienen";
 }
 
-<h1>Create</h1>
+<h1>Voorstel Indienen</h1>
 
-<h4>Suggestion</h4>
+<h4>Nieuw Voorstel</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <!-- Titel veld toegevoegd -->
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
+            <!-- Titel veld -->
+            <div class="form-group mb-3">
+                <label asp-for="Title" class="form-label">Titel</label>
+                <input asp-for="Title" class="form-control" placeholder="Voer een titel in" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+            <!-- Beschrijving veld -->
+            <div class="form-group mb-3">
+                <label asp-for="Description" class="form-label">Beschrijving</label>
+                <textarea asp-for="Description" class="form-control" placeholder="Beschrijf het voorstel" rows="4"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+            
 
-            <!-- Member veld toegevoegd indien nodig -->
-            <div class="form-group">
-                <label asp-for="Member" class="control-label"></label>
-                <input asp-for="Member" class="form-control" />
-                <span asp-validation-for="Member" class="text-danger"></span>
-            </div>
+            <input asp-for="MemberId" value="@ViewBag.MemberId" hidden />
 
+
+            <!-- Knoppen -->
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <button type="submit" class="btn btn-success">Indienen</button>
+                <a asp-action="Index" class="btn btn-secondary ms-2">Lijst met alle voorstellen</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

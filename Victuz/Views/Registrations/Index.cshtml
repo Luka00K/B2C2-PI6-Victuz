@@ -35,9 +35,10 @@ else
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => registration.Activity.Description) <!-- Toont de beschrijving van de activiteit -->
+                        
                     </td>
                     <td>
-                        <a asp-action="Details" asp-route-id="@registration.Id">Details</a> |
+                        <a asp-controller="ActivityModels" asp-action="Details" asp-route-id="@registration.Activity.Id">Details</a> |
                         <a asp-action="Delete" asp-route-id="@registration.Id">Uitschrijven</a>
                     </td>
                 </tr>

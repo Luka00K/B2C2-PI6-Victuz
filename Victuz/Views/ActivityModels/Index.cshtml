@@ -35,42 +35,53 @@
                         </p>
                         <p class="card-text">
                             <span class="font-weight-bold">Categorieën:</span>
-                            <ul class="list-unstyled mb-0">
-                                @foreach (var category in item.Categories)
+                            
+                            @{
+                                bool oneCategory = false;
+                                if(item.Categories.Count == 1)
                                 {
-                                    <li>@category.Name</li>
+                                    oneCategory = true;   
                                 }
-                            </ul>
+
+                                foreach (var category in item.Categories)
+                                {
+                                    if(oneCategory)
+                                    {
+                                        <text>@category.Name</text>
+
+                                    }
+                                    else 
+                                    {
+                                        <text>@category.Name, </text>
+
+                                    }
+                                }
+                            }
+                            
                         </p>
                         <p class="card-text">
                             <span class="font-weight-bold">Locatie:</span>
                             @Html.DisplayFor(modelItem => item.Location.Name)
                         </p>
                   
-                      @if (User.IsInRole("BoardMember"))
-                      {
-                          <p class="card-text">
-                              <span class="font-weight-bold">Organisator:</span>
-                              @item.Organizer.FirstName @item.Organizer.LastName
-                          </p>
-                      }
+                      
                   <p>
-                    <span class="font-weight-bold">Betaling:</span>
+                    
                     @if (item.PaymentType == "FreeForEverybody")
                     {
-                        <p> Gratis </p>
+                        <span class="font-weight-bold">Betaling:</span><text> Gratis </text>
                     }
                     else if (item.PaymentType == "FreeForMembers")
                     {
-                        <p> Gratis voor leden </p>
+                        <span class="font-weight-bold">Betaling:</span><text> Gratis voor leden </text>
                     }
                     else if(item.PaymentType == "Paid")
                     {
-                        <p> Betaald </p>
+                        <span class="font-weight-bold">Betaling:</span><text> Betaald </text>
                     }
                     else
                     {
-                        <p> Geen info </p>
+                        <span class="font-weight-bold">Betaling:</span> <text> Geen info </text>
                     }
                   </p>  
                   
@@ -98,3 +109,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+}
