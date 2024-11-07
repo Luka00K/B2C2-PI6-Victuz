@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha384-3n3lHl8hiR3XgJrR7KwEKp0Dg5OtQZ1K4gT/AmiU8bcZAbHcKNFW5G3MLZauQ2MW" crossorigin="anonymous">
 
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     @if (User.Identity.IsAuthenticated)
     {
         @if (User.IsInRole("Member"))
@@ -35,7 +35,7 @@
         @Html.Partial("_NavbarNotLoggedIn")
     }
 
-    <div class="container">
+    <div class="container flex-grow-1">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
