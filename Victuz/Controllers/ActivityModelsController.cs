@@ -280,19 +280,64 @@ namespace Victuz.Controllers
 
         public IActionResult Search()
         {
+            ViewBag.Filter = "Everything";
             return View();
         }
 
         [HttpPost]
-        public IActionResult Search(string SearchQuery)
+        public IActionResult Search(string SearchQuery, string SelectedFilter)
         {
-            var activities = _context.Activities
-                .Include(a => a.Categories)
-                .Where(a => a.Name.Contains(SearchQuery) ||
-                            a.Description.Contains(SearchQuery) ||
-                            a.Categories.Any(c => c.Name.Contains(SearchQuery)) ||
-                            a.Location.City.Contains(SearchQuery) ||
-                            a.Location.Street.Contains(SearchQuery));
+            IQueryable activities = null;
+
+            if (SearchQuery == null)
+            {
+                activities = _context.Activities
+                               .Include(a => a.Categories)
+                               .Include(a => a.Location);
+            }
+            else if (SelectedFilter == "Everything")
+            {
+                activities = _context.Activities
+                               .Include(a => a.Categories)
+                               .Include(a => a.Location)
+                               .Where(a => a.Name.Contains(SearchQuery) ||
+                                           a.Description.Contains(SearchQuery) ||
+                                           a.Categories.Any(c => c.Name.Contains(SearchQuery)) ||
+                                           a.Location.City.Contains(SearchQuery) ||
+                                           a.Location.Street.Contains(SearchQuery));
+            }
+            else if (SelectedFilter == "Name")
+            {
+                activities = _context.Activities
+                               .Include(a => a.Categories)
+                               .Include(a => a.Location)
+                               .Where(a => a.Name.Contains(SearchQuery));
+            }
+            else if (SelectedFilter == "Description")
+            {
+                activities = _context.Activities
+                               .Include(a => a.Categories)
+                               .Include(a => a.Location)
+                               .Where(a => a.Description.Contains(SearchQuery));
+            }
+            else if (SelectedFilter == "Category")
+            {
+                activities = _context.Activities
+                               .Include(a => a.Categories)
+                               .Include(a => a.Location)
+                               .Where(a => a.Categories.Any(c => c.Name.Contains(SearchQuery)));
+            }
+            else if (SelectedFilter == "Location")
+            {
+                activities = _context.Activities
+                               .Include(a => a.Categories)
+                               .Include(a => a.Location)
+                               .Where(a => a.Location.City.Contains(SearchQuery) ||
+                                           a.Location.Street.Contains(SearchQuery) || 
+                                           a.Location.Name.Contains(SearchQuery));
+            }
+
+            ViewBag.Filter = SelectedFilter;
             return View(activities);
         }
     }

@@ -23,7 +23,7 @@ namespace Victuz.Controllers
         // GET: Suggestions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Suggestions.ToListAsync());
+            return View(await _context.Suggestions.Include(s => s.Member).ToListAsync());
         }
 
         // GET: Suggestions/Details/5
@@ -39,13 +39,14 @@ namespace Victuz.Controllers
             // Haal het gebruikers-ID en de rol van de ingelogde gebruiker op
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             bool isBoardMember = User.IsInRole("BoardMember");
-
+            bool isCreator = suggestion.MemberId == userId;
             // Bepaal het aantal likes
             int likeCount = suggestion.Likes.Count;
 
             // Sla de like-informatie op in ViewBag
             ViewBag.IsBoardMember = isBoardMember;
             ViewBag.LikeCount = likeCount;
+            ViewBag.IsCreator = isCreator;
 
             // Als de gebruiker geen BoardMember is, controleer dan of hij het voorstel al geliket heeft
             if (!isBoardMember)
@@ -92,20 +93,28 @@ namespace Victuz.Controllers
         // GET: Suggestions/Create
         public IActionResult Create()
         {
+            ViewBag.MemberId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return View();
         }
 
         // POST: Suggestions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Id,Description")] Suggestion suggestion)
+        public async Task<IActionResult> Create([Bind("Title ,Description, MemberId")] Suggestion suggestion)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(suggestion);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (User.IsInRole("Member"))
+                {
+                    _context.Add(suggestion);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
+                
             }
+            ViewBag.MemberId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             return View(suggestion);
         }
 
@@ -122,13 +131,14 @@ namespace Victuz.Controllers
             {
                 return NotFound();
             }
+
             return View(suggestion);
         }
 
         // POST: Suggestions/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Title")] Suggestion suggestion)
+        public async Task<IActionResult> Edit(int id, [Bind("Id, Description,Title, MemberId")] Suggestion suggestion)
         {
             if (id != suggestion.Id)
             {
@@ -155,6 +165,7 @@ namespace Victuz.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(suggestion);
         }
 
