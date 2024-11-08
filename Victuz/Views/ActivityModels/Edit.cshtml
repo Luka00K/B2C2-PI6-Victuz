@@ -86,11 +86,17 @@
 
             </div>
         </form>
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger mt-3">
+                @TempData["ErrorMessage"]
+            </div>
+        }
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Terug naar lijst</a>
+    <a href="javascript:history.back()">Terug</a>
 </div>
 
 @section Scripts {
