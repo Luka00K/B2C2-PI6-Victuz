@@ -217,3 +217,8 @@
 .SaveAttendance-button {
     margin-top: 20px;
 }
+
+
+.activity-date span {
+    white-space: nowrap;
+}
