@@ -19,7 +19,9 @@
                         <h1 class="display-4">Meest aankomende activiteit</h1>
                         <h2>@highlightActivity.Name</h2>
                         <p>@highlightActivity.Description</p>
-                        <p class="activity-date">@highlightActivity.DateTime.ToString("g")</p>
+                        <p class="activity-date">
+                            <span>@highlightActivity.DateTime.ToString("dd-MM-yyyy HH:mm")</span>
+                        </p>
                     </div>
                 </a>
             }
